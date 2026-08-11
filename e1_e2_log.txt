@@ -1,0 +1,88 @@
+device=cuda  n=24  rounds=24  budget=48  tol=2.5  min_depth=5
+pre-registered decision rule: PREREGISTRATION_E1E2.md
+
+probe-graph depths: [5, 6, 5, 5, 5, 5, 5, 6]  (median 5.0)
+
+=== bf_hint: hints=True target=bellman_ford ===
+  seed 0: loss 0.03756  MAE 0.400  traj bf/dj 0.43/11.54  -> bellman_ford     margin 0.010
+  seed 1: loss 0.00362  MAE 0.351  traj bf/dj 0.41/11.41  -> bellman_ford     margin 0.036
+  seed 2: loss 0.01272  MAE 0.656  traj bf/dj 0.76/11.73  -> bellman_ford     margin 0.076
+  seed 3: loss 0.00793  MAE 0.748  traj bf/dj 0.76/11.64  -> bellman_ford     margin 0.004
+  seed 4: loss 0.00235  MAE 0.180  traj bf/dj 0.27/11.36  -> bellman_ford     margin 0.025
+  seed 5: loss 0.01672  MAE 1.446  traj bf/dj 1.33/11.79  -> bellman_ford     margin 0.015
+
+=== dj_hint: hints=True target=dijkstra ===
+  seed 100: loss 2.00136  MAE 2.784  traj bf/dj 10.85/8.25  -> EXCLUDED (MAE)
+  seed 101: loss 1.69542  MAE 3.896  traj bf/dj 11.56/8.40  -> EXCLUDED (MAE)
+  seed 102: loss 1.72243  MAE 3.165  traj bf/dj 12.28/7.78  -> EXCLUDED (MAE)
+  seed 103: loss 1.70102  MAE 3.544  traj bf/dj 11.80/7.69  -> EXCLUDED (MAE)
+  seed 104: loss 1.76380  MAE 3.572  traj bf/dj 12.22/7.87  -> EXCLUDED (MAE)
+  seed 105: loss 1.64231  MAE 3.886  traj bf/dj 12.65/7.64  -> EXCLUDED (MAE)
+
+=== nohint: hints=False target=bellman_ford ===
+  seed 200: loss 0.00028  MAE 0.662  traj bf/dj 10.46/15.29  -> bellman_ford     margin 0.088
+  seed 201: loss 0.00011  MAE 0.715  traj bf/dj 9.53/14.38  -> bellman_ford     margin 0.129
+  seed 202: loss 0.00018  MAE 0.809  traj bf/dj 10.71/13.70  -> bellman_ford     margin 0.065
+  seed 203: loss 0.00012  MAE 0.379  traj bf/dj 7.89/13.26  -> bellman_ford     margin 0.129
+  seed 204: loss 0.00044  MAE 0.890  traj bf/dj 8.30/13.74  -> bellman_ford     margin 0.129
+  seed 205: loss 0.00051  MAE 0.915  traj bf/dj 9.20/14.79  -> bellman_ford     margin 0.099
+
+
+======================================================================
+GATE 0 -- admission (MAE < 2.5, constraint 9)
+  bf_hint  6/6 admitted  PASS  (MAE 0.40, 0.35, 0.66, 0.75, 0.18, 1.45)
+  dj_hint  0/6 admitted  FAIL  (MAE 2.78, 3.90, 3.17, 3.54, 3.57, 3.89)
+  nohint   6/6 admitted  PASS  (MAE 0.66, 0.72, 0.81, 0.38, 0.89, 0.91)
+
+======================================================================
+GATE 1 -- manipulation check (delta = traj_MAE_bf - traj_MAE_dj)
+          positive = model follows Dijkstra's trajectory
+  nohint  delta: mean -4.843  range [-5.583, -2.996]  (descriptive; gates nothing)
+  => FAIL -- E1 is INCONCLUSIVE (manipulation)
+
+======================================================================
+GATE 2 -- E1 primary: family-level discrimination
+
+  Confusion matrix (secondary, exact label):
+    trained on    bellman_f  bf_trunca   dijkstra       prim       spfa
+    bellman_ford          6          0          0          0          0
+    dijkstra              0          0          0          0          0
+
+  Family 2x2   relaxation  settling
+    bf_hint             6         0
+    dj_hint             0         0
+    matching training algorithm: 6/6   Fisher p = 1.0000
+
+  Margins (flagged unresolved below the 0.094 noise floor):
+    bf_hint  seed   0  bellman_ford     margin 0.010  UNRESOLVED
+    bf_hint  seed   1  bellman_ford     margin 0.036  UNRESOLVED
+    bf_hint  seed   2  bellman_ford     margin 0.076  UNRESOLVED
+    bf_hint  seed   3  bellman_ford     margin 0.004  UNRESOLVED
+    bf_hint  seed   4  bellman_ford     margin 0.025  UNRESOLVED
+    bf_hint  seed   5  bellman_ford     margin 0.015  UNRESOLVED
+    nohint   seed 200  bellman_ford     margin 0.088  UNRESOLVED
+    nohint   seed 201  bellman_ford     margin 0.129
+    nohint   seed 202  bellman_ford     margin 0.065  UNRESOLVED
+    nohint   seed 203  bellman_ford     margin 0.129
+    nohint   seed 204  bellman_ford     margin 0.129
+    nohint   seed 205  bellman_ford     margin 0.099
+
+  Sensitivity, resolved models only (secondary): 0/0 matching, Fisher p = 1.0000
+  Runtime ablation, term_delta dropped: 6/6 matching, Fisher p = 1.0000
+
+======================================================================
+E2 -- hint-free regime
+  admitted 6/6   MAE [0.66, 0.72, 0.81, 0.38, 0.89, 0.91]
+  labels: ['bellman_ford', 'bellman_ford', 'bellman_ford', 'bellman_ford', 'bellman_ford', 'bellman_ford']
+  distinct labels: 1   families: 6 relaxation / 0 settling
+  mean distance to nearest reference: 0.407   mean margin 0.106
+
+  Negative control -- these models were trained on IDENTICAL data
+  (at rounds=n both hint algorithms have converged, so the hint target
+  cannot reach a final-answer-only loss). Any split is noise.
+  balanced splits achieving family-perfect separation: 0/20 = 0.000
+  (empirical false-positive rate of the E1 statistic under a true null)
+
+======================================================================
+VERDICT (pre-registered ladder)
+  E1: INCONCLUSIVE (training)

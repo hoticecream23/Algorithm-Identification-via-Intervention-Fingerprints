@@ -1,0 +1,91 @@
+device=cuda  n=24  rounds=24  budget=48  tol=2.5  gate_eps=0.002  halt_k=8
+pre-registered decision rule: PREREGISTRATION_E3.md
+
+probe-graph depths: [5, 6, 5, 5, 5, 5, 5, 6]  (median 5.0)
+
+=== plain: train_rounds=24 deploy_max_rounds=None ===
+  seed 0: loss 0.00244  MAE 2.694  frozen 0.00  -> EXCLUDED (MAE)
+  seed 1: loss 0.00026  MAE 0.618  frozen 0.00  -> bellman_ford     margin 0.099 fire@1
+  seed 2: loss 0.00033  MAE 0.622  frozen 0.00  -> bellman_ford     margin 0.099 fire@1
+  seed 3: loss 0.00129  MAE 0.622  frozen 0.00  -> bellman_ford     margin 0.095 fire@1
+  seed 4: loss 0.00023  MAE 0.545  frozen 0.00  -> bellman_ford     margin 0.122 fire@2
+  seed 5: loss 0.00068  MAE 0.926  frozen 0.00  -> bellman_ford     margin 0.111 fire@1
+
+=== gated: train_rounds=24 deploy_max_rounds=None ===
+  seed 300: loss 0.00038  MAE 0.708  frozen 1.00  -> bellman_ford     margin 0.125 fire@1
+  seed 301: loss 0.00035  MAE 0.867  frozen 1.00  -> bellman_ford     margin 0.038 fire@1
+  seed 302: loss 0.00035  MAE 0.802  frozen 1.00  -> bellman_ford     margin 0.113 fire@2
+  seed 303: loss 0.00014  MAE 0.440  frozen 0.96  -> bellman_ford     margin 0.082 fire@2
+  seed 304: loss 0.00010  MAE 0.342  frozen 0.72  -> bellman_ford     margin 0.114 fire@1
+  seed 305: loss 0.00153  MAE 1.349  frozen 0.66  -> bellman_ford     margin 0.065 fire@1
+
+=== halt: train_rounds=8 deploy_max_rounds=8 ===
+  seed 400: loss 0.00036  MAE 0.751  frozen 0.00  -> bellman_ford     margin 0.014 fire@2
+  seed 401: loss 0.00027  MAE 0.534  frozen 0.00  -> bellman_ford     margin 0.073 fire@2
+  seed 402: loss 0.00019  MAE 0.684  frozen 0.00  -> bellman_ford     margin 0.044 fire@2
+  seed 403: loss 0.00037  MAE 0.770  frozen 0.00  -> bellman_ford     margin 0.048 fire@3
+  seed 404: loss 0.00021  MAE 0.666  frozen 0.00  -> bellman_ford     margin 0.017 fire@2
+  seed 405: loss 0.00025  MAE 0.961  frozen 0.00  -> bellman_ford     margin 0.013 fire@3
+
+
+======================================================================
+GATE 0 -- admission (MAE < 2.5)
+  plain  5/6 admitted  PASS  (MAE 2.69, 0.62, 0.62, 0.62, 0.54, 0.93)
+  gated  6/6 admitted  PASS  (MAE 0.71, 0.87, 0.80, 0.44, 0.34, 1.35)
+  halt   6/6 admitted  PASS  (MAE 0.75, 0.53, 0.68, 0.77, 0.67, 0.96)
+
+======================================================================
+GATE 1 -- mechanism check (is the architectural difference actually active?)
+  gated  final frozen fraction: [1.00, 1.00, 1.00, 0.96, 0.72, 0.66]  PASS (need all > 0.50)
+  plain  final frozen fraction: [0.0, 0.0, 0.0, 0.0, 0.0]
+  gated  commitment 25%->90% spans [8, 6, 6, 9] rounds, starts at [11, 8, 8, 12]  PASS (need span >= 3 and start > 5)
+  halt   median firing round: [np.float64(2.0), np.float64(2.0), np.float64(2.0), np.float64(3.0), np.float64(2.0), np.float64(3.0)]  vs k=8  PASS (need < k, else no response room)
+  => PASS
+
+======================================================================
+GATE 2 -- discrimination
+
+  Confusion matrix
+    arch     bellman_f  bf_trunca   dijkstra       prim       spfa
+    plain            5          0          0          0          0
+    gated            6          0          0          0          0
+    halt             6          0          0          0          0
+
+  PRIMARY -- gated vs plain, family level
+            relaxation  settling
+    plain            5         0
+    gated            6         0
+    matching prediction: 5/11   Fisher p = 1.0000
+
+  SECONDARY -- halt vs plain, labelled bf_truncated_k3
+    halt 0/6   plain 0/5   Fisher p = 1.0000
+
+  SECONDARY -- 3-way exact-label permutation test
+    5/17 models match their arm's predicted reference   p = 1.0000  (20000 permutations)
+
+  Margins (unresolved below 0.094):
+    plain  seed   1  bellman_ford     margin 0.099
+    plain  seed   2  bellman_ford     margin 0.099
+    plain  seed   3  bellman_ford     margin 0.095
+    plain  seed   4  bellman_ford     margin 0.122
+    plain  seed   5  bellman_ford     margin 0.111
+    gated  seed 300  bellman_ford     margin 0.125
+    gated  seed 301  bellman_ford     margin 0.038  UNRESOLVED
+    gated  seed 302  bellman_ford     margin 0.113
+    gated  seed 303  bellman_ford     margin 0.082  UNRESOLVED
+    gated  seed 304  bellman_ford     margin 0.114
+    gated  seed 305  bellman_ford     margin 0.065  UNRESOLVED
+    halt   seed 400  bellman_ford     margin 0.014  UNRESOLVED
+    halt   seed 401  bellman_ford     margin 0.073  UNRESOLVED
+    halt   seed 402  bellman_ford     margin 0.044  UNRESOLVED
+    halt   seed 403  bellman_ford     margin 0.048  UNRESOLVED
+    halt   seed 404  bellman_ford     margin 0.017  UNRESOLVED
+    halt   seed 405  bellman_ford     margin 0.013  UNRESOLVED
+
+  Runtime ablation (term_delta dropped), gated vs plain: Fisher p = 1.0000
+
+======================================================================
+VERDICT (pre-registered ladder)
+  E3: NULL
+  Fingerprints do not separate architectures built to differ in procedure.
+  That is the method's own target, so the neural side is finished.

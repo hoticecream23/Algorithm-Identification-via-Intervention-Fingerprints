@@ -1,0 +1,50 @@
+device=cuda  tau=-0.084 (frozen from E3, not refitted)
+pre-registered decision rule: PREREGISTRATION_E3B.md
+
+probe-graph depths (rng 7): [6, 6, 6, 6, 5, 5, 6, 5]  (median 6.0)
+symbolic reference-to-reference distance: mean 0.234  median 0.246
+
+=== plain: train_rounds=24 deploy=None ===
+  seed 500: MAE 0.449  s=-0.154 -> pred plain  [bellman_ford, margin 0.135]
+  seed 501: MAE 4.647  EXCLUDED (MAE)
+  seed 502: MAE 0.969  s=-0.106 -> pred plain  [bellman_ford, margin 0.106]
+  seed 503: MAE 1.160  s=-0.176 -> pred plain  [bellman_ford, margin 0.176]
+  seed 504: MAE 0.763  s=-0.062 -> pred halt   [bellman_ford, margin 0.062]
+  seed 505: MAE 0.997  s=-0.179 -> pred plain  [bellman_ford, margin 0.153]
+
+=== halt: train_rounds=8 deploy=8 ===
+  seed 600: MAE 0.629  s=-0.074 -> pred halt   [bellman_ford, margin 0.074]
+  seed 601: MAE 0.941  s=+0.019 -> pred halt   [bf_truncated_k3, margin 0.019]
+  seed 602: MAE 0.483  s=-0.071 -> pred halt   [bellman_ford, margin 0.071]
+  seed 603: MAE 0.420  s=-0.129 -> pred plain  [bellman_ford, margin 0.129]
+  seed 604: MAE 0.946  s=-0.055 -> pred halt   [bellman_ford, margin 0.055]
+  seed 605: MAE 1.091  s=-0.083 -> pred halt   [bellman_ford, margin 0.083]
+
+======================================================================
+GATE 0 -- admission
+  plain  5/6 admitted  (MAE 0.45, 4.65, 0.97, 1.16, 0.76, 1.00)
+  halt   6/6 admitted  (MAE 0.63, 0.94, 0.48, 0.42, 0.95, 1.09)
+
+GATE 1 -- mechanism
+  halt median firing rounds [2.0, 3.0, 2.0, 3.0, 2.0, 2.0] vs k=8  PASS
+
+======================================================================
+GATE 2 -- frozen rule (predict halt if s > -0.084)
+            pred plain  pred halt
+    plain            4          1
+    halt             1          5
+    correct 9/11   Fisher p = 0.0801
+    plain  s: [-0.154, -0.106, -0.176, -0.062, -0.179]  range [-0.179, -0.062]
+    halt   s: [-0.074, 0.019, -0.071, -0.129, -0.055, -0.083]  range [-0.129, +0.019]
+
+  Structural check on a fresh probe set (descriptive, the important number):
+    plain  mean distance to nearest reference 0.390   labels ['bellman_ford']
+    halt   mean distance to nearest reference 0.296   labels ['bellman_ford', 'bf_truncated_k3']
+    symbolic reference-to-reference median: 0.246
+
+======================================================================
+VERDICT: FAILED
+
+  (post-hoc, not the verdict) E3b's own gap: plain max -0.062, halt min -0.129, overlapping by -0.067
+  The lead is dead. Neural side finished; write up the symbolic
+  contribution plus the characterised negative.

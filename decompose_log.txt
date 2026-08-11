@@ -1,0 +1,85 @@
+device=cuda  probe_graphs=8  tol=2.5
+
+  plain  seed 700: MAE 1.036  d(bf) 0.438
+  plain  seed 701: MAE 1.361  d(bf) 0.424
+  plain  seed 702: MAE 0.575  d(bf) 0.424
+  gated  seed 800: MAE 1.005  d(bf) 0.412
+  gated  seed 801: MAE 1.190  d(bf) 0.412
+  gated  seed 802: MAE 0.529  d(bf) 0.367
+  halt   seed 900: MAE 0.387  d(bf) 0.375
+  halt   seed 901: MAE 1.448  d(bf) 0.467
+  halt   seed 902: MAE 0.662  d(bf) 0.414
+
+==========================================================================
+1. WHICH INTERVENTIONS CARRY THE NEURAL-VS-SYMBOLIC DISAGREEMENT?
+   (fraction of that intervention's jointly-stable slots that disagree)
+
+    intervention                    neural vs BF  symbolic pairs      
+    inject_unreached_node                  0.944           0.095
+    delete_tree_edge_near                  0.713           0.228  <- deletion
+    corrupt_node_down                      0.648           0.197
+    insert_improving_edge                  0.367           0.458
+    lower_tree_edge_weight                 0.333           0.433
+    delete_tree_edge_far                   0.278           0.105  <- deletion
+    insert_shortcut_from_source            0.278           0.406
+    corrupt_node_up                        0.222           0.335
+    delete_nontree_edge                    0.167           0.000  <- deletion
+
+==========================================================================
+2. ARE THOSE THE SAME AXES THAT CARRY SYMBOLIC IDENTITY?
+
+    correlation across the 9 interventions: r = -0.233
+    r near 0 or negative => neural models differ from the references along
+    directions that carry no identity information, and the discriminative
+    axes are swamped. r near +1 => they differ along the same axes.
+
+==========================================================================
+3. HOW MUCH IS THE DELETION / MONOTONICITY OFFSET?
+
+    deletion probes are 30.4% of all disagreeing slots (they are 3/9 = 33.3% of the suite)
+
+    Distances with the deletion probes removed (DIAGNOSTIC ONLY --
+    a discrimination appearing here is a candidate needing pre-registered
+    replication on held-out seeds, not a result):
+
+    model           d_near full  d_near no-del        label full      label no-del
+    plain 700             0.438          0.476      bellman_ford      bellman_ford
+    plain 701             0.424          0.464      bellman_ford   bf_truncated_k3
+    plain 702             0.424          0.476      bellman_ford      bellman_ford
+    gated 800             0.412          0.476      bellman_ford      bellman_ford
+    gated 801             0.412          0.476      bellman_ford      bellman_ford
+    gated 802             0.367          0.368      bellman_ford      bellman_ford
+    halt 900              0.375          0.375      bellman_ford      bellman_ford
+    halt 901              0.439          0.400   bf_truncated_k3   bf_truncated_k3
+    halt 902              0.389          0.400   bf_truncated_k3   bf_truncated_k3
+
+    symbolic reference-to-reference median: 0.303 full, 0.458 without deletions
+
+==========================================================================
+4. WHICH PREDICATES DISAGREE?
+
+    latency            1.000
+    poked_settled      1.000
+    recovery           0.335
+    spread1            0.215
+    term_delta         0.161
+    pi_churn           0.115
+
+==========================================================================
+5. SLOTS WHERE EVERY NEURAL MODEL DISAGREES WITH EVERY REFERENCE
+
+   These are pure offset: they inflate every neural distance equally and
+   carry no information distinguishing one neural model from another.
+
+    delete_tree_edge_far           poked_settled
+    inject_unreached_node          poked_settled
+    insert_improving_edge          poked_settled
+    insert_shortcut_from_source    poked_settled
+
+    4 such slots out of ~32 jointly stable = 12.5% of every neural distance
+C:\Users\advay\AppData\Local\Programs\Python\Python314\Lib\site-packages\numpy\_core\fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+C:\Users\advay\AppData\Local\Programs\Python\Python314\Lib\site-packages\numpy\_core\_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+
+saved: decompose_results.json, artifacts/fingerprints.json, artifacts/*.pt
