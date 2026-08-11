@@ -8,10 +8,7 @@ observe how the disturbance propagates. The pattern of responses is an *interven
 fingerprint*, and it can be compared against fingerprints of reference algorithms
 (Bellman-Ford, Dijkstra, Prim, SPFA, truncated Bellman-Ford) measured the same way.
 
-New here? Read **[HANDOFF.md](HANDOFF.md)** — it is the cold-start document and carries the
-current status, the constraints, and the open threads. **[THEORY.md](THEORY.md)** has the
-definitional layer: `I,D`-relative behavioural equivalence, the minimal separating set, and
-five propositions with witnesses.
+ **[THEORY.md](THEORY.md)** has the definitional layer: `I,D`-relative behavioural equivalence, the minimal separating set, and five propositions with witnesses.
 
 ## Status
 
