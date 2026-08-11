@@ -1,6 +1,6 @@
 # Algorithm Identification by Intervention Fingerprints
 
-Can you tell which algorithm a neural reasoner has learned without looking at its weights —
+Can you tell which algorithm a neural reasoner has learned without looking at its weights
 by poking it and watching how it responds?
 
 Delete an edge, corrupt a node's estimate mid-run, inject a value at an unreached node, then
@@ -13,7 +13,7 @@ fingerprint*, and it can be compared against fingerprints of reference algorithm
 ## Status
 
 The symbolic contribution is complete and positive. The neural transfer question was tested
-four separate ways — different training targets, hint-free supervision, three architectures
+four separate ways different training targets, hint-free supervision, three architectures
 built to differ in procedure, and a held-out replication of the one lead that turned up — and
 is negative on all four. A follow-up decomposition explains *why*: the fingerprint measures
 neural models along dimensions that carry no algorithmic identity, and is nearly blind along
@@ -30,8 +30,8 @@ makes the natural research object not "the fingerprint" but *the minimal interve
 that distinguishes a family of algorithms over a given input distribution*.
 
 **Behavioural identity is not accuracy.** On shallow graphs, truncated Bellman-Ford returns
-answers identical to real Bellman-Ford on 11 of 12 instances — no accuracy metric separates
-them — and the fingerprint separates them anyway. On deeper graphs, that same truncated
+answers identical to real Bellman-Ford on 11 of 12 instances no accuracy metric separates
+them and the fingerprint separates them anyway. On deeper graphs, that same truncated
 algorithm is correct on 0 of 12. Fingerprints also recover the trained algorithm from real
 networks: six MPNNs differing only by seed all identify as Bellman-Ford, and the *worst*
 model of the six identifies with the largest margin.
@@ -47,16 +47,16 @@ accuracy, one of which looked excellent before failing replication on held-out s
 The reason is specific and worth knowing: **these networks differ in update-rule
 generalization, not in procedure.** They run the same control flow with a rule that degrades
 off distribution. Intervention fingerprints probe execution structure, so they are blind to
-this. The method should be expected to detect genuinely different procedures — early
-halting, premature commitment, depth-limited propagation — and nothing else.
+this. The method should be expected to detect genuinely different procedures early
+halting, premature commitment, depth-limited propagation and nothing else.
 
 **That expectation was tested directly and also failed.** Three architectures built to
-execute differently — plain relaxation, a gated model with Dijkstra-like per-node
-commitment, and hard truncation — were trained hint-free on identical data and fingerprinted.
+execute differently plain relaxation, a gated model with Dijkstra-like per-node
+commitment, and hard truncation were trained hint-free on identical data and fingerprinted.
 17 of 17 models labelled `bellman_ford`; the mechanism check confirmed the architectural
 differences were genuinely active. A follow-up decomposition found why: every neural model
 sits 0.30-0.40 from its nearest symbolic reference, while two *different* symbolic
-algorithms sit 0.25-0.30 apart on the same measure — the label was never supported. The
+algorithms sit 0.25-0.30 apart on the same measure the label was never supported. The
 interventions that carry the most algorithmic identity are the ones neural models agree on
 most; the ones where neural models are distinctive carry almost no identity information
 (correlation across the intervention suite: r = -0.23). See `FINDINGS_E3.md` and
