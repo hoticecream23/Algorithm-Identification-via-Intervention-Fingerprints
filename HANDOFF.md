@@ -2,14 +2,19 @@
 
 Cold-start context for resuming this project in a fresh session. Read this first.
 
-**Last updated:** 2026-08-11 — symbolic work complete and positive. **The neural side is
-finished and now explained:** E3 tested the method on its designed target with both gates
-passing and returned a null, E3b failed to replicate the one lead, and the decomposition
-shows why — the fingerprint measures neural models along axes orthogonal to the ones
-carrying algorithmic identity (r = −0.233), with two of seven predicates pinned constant.
-**Next action: write up.** `THEORY.md` now holds the definitional layer. Two concrete
-repairs are documented under "If someone does resume the neural side" — both candidates,
-neither claimed. Remaining open work is theoretical and symbolic (E5, E6).
+**Last updated:** 2026-08-13 — symbolic work complete and positive. **The neural side is
+finished twice over and now explained twice.** E3 tested the method on its designed target with
+both gates passing and returned a null, E3b failed to replicate the one lead, and the
+decomposition shows why — the fingerprint measures neural models along axes orthogonal to the
+ones carrying algorithmic identity (r = −0.233), with two of seven predicates pinned constant.
+**Phase F then closed the obvious repair**: a parametric family replacing classification with
+estimation contains all five reference algorithms *bit-identically* and the trained networks at
+chi2 ~10^4 — so the networks are not interior points of the natural continuous family either.
+**Next action: write up.** `THEORY.md` holds the definitional layer. Two concrete repairs are
+documented under "If someone does resume the neural side" — both candidates, neither claimed,
+and one of them is corrected by Phase F. `FINDINGS_RESIDUAL.md` carries an exploratory answer to
+"what are the networks doing instead" with its own frozen confirmatory design; it is explicitly
+not a result. Remaining open work is theoretical and symbolic (E5, E6).
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA
 available, torch_geometric 2.8. JAX and DeepMind CLRS are **not** installed and are not
@@ -69,6 +74,38 @@ distribution. Intervention fingerprints probe execution structure, so they are b
 The method should be expected to detect genuinely different procedures — early halting,
 premature commitment, depth-limited propagation — and nothing else.
 
+**Tried and closed (Phase F, 2026-08-13).** The obvious repair to the structural finding is
+that reading a *discrete label* off a continuous system is the wrong question: replace
+classification with **parameter estimation** over a family `(α, τ, γ, c, k, selection)`
+containing the discrete algorithms as limit points and the networks as interior points. Half of
+that works and is exact. The family contains all five references **bit-identically**, damping
+and path discount have exact closed-form estimators, and the whole thing **replicated** on a
+fresh graph stream — the first result here to do so. But **the networks are not interior points
+of it either**: six of nine E3 checkpoints fit at chi-squared of order 10^4, against an
+in-family holdout at 0.0000 and a deliberately out-of-family control at 15.0. They are further
+from this family than the negative control is. So a gradient-trained MPNN is not a damped, soft,
+discounted relaxation with a fitted temperature; it is something this family does not reach, and
+the family's own residual says so at four orders of magnitude. Verdict DEAD on the frozen
+criteria. `FINDINGS_FAMILY.md`.
+
+**And an exploratory answer to "so what ARE they doing" (`FINDINGS_RESIDUAL.md`, not a result).**
+Pointing the Phase F residual at the nine checkpoints: the per-node path discount `γ_v` has an
+IQR of 0.24–0.84 where every family member gives exactly 0.000, it **exceeds 1** in 2–47% of
+rows, and it rises through the run (ρ = +0.47 on the division-free numerator, 9/9 sign
+agreement) — a *state-dependent, sometimes amplifying* path gain rather than a scalar discount.
+Three of nine models also show 7–19% of responses with the **wrong sign** (anti-relaxation),
+which no family member can produce and which is the same phenomenon as B2's surviving `nonmono`
+lead measured per-edge. Two hypotheses were refuted and both matter: no self-amplification on
+the diagonal, and `width > deg(v)` never occurs — the network is genuinely one-hop local in
+`d`-space, so **the observable is sound and it was the hypothesis space that was wrong**.
+Confirming any of it needs freshly trained seeds; the frozen test is written down.
+
+Phase F also **corrected two wrong claims in `fpid/response.py`** that had been quoted as
+motivation for exactly this reframe — see the warning box under "If someone does resume the
+neural side". The "networks depend on 2-3 neighbours where every hard-`min` algorithm depends
+on exactly 1" separation is largely an estimator artefact. The orthogonality and vacuity results
+are independent and stand.
+
 ---
 
 ## What the project set out to claim
@@ -105,7 +142,22 @@ superseded — treat as history).
 | E2 | Hint-free regime | **Done, POSITIVE** (but see E3's structural finding) |
 | E3 | Architecturally distinct procedures | **Done, NULL** — both gates passed |
 | E3b | Held-out replication of E3's truncation lead | **Done, FAILED** — direction held, resolution did not |
+| F | Parametric family spike — estimate parameters instead of classifying | **Done, DEAD** — family contains the algorithms exactly; the networks sit at chi2 ~10^4 |
+| F+ | Exploratory: what the networks do instead (`run_residual_audit.py`) | **Done, EXPLORATORY** — state-dependent path gain; needs fresh seeds |
 | — | Full model zoo (60-100 models) | Not started; **not justified** without a new idea |
+
+**Phase F in one line** (`FINDINGS_FAMILY.md`, `PREREGISTRATION_FAMILY.md`,
+`GATE1_DISQUALIFICATIONS.md`): replacing nearest-reference classification with parameter
+estimation over a family `(alpha, tau, gamma, c, k, selection)` that contains all five
+references **exactly** (bit-identical, Gate 0a) and has closed-form estimators for damping and
+path discount accurate to 4 decimals — and which **does not contain the trained networks**. Six
+of nine E3 checkpoints fit at chi2 of order 10^4 against an in-family holdout at 0.0000 and a
+deliberately out-of-family control at 15.0, with non-zero row-sum deviation (a membership test
+with no fitted parameters) on all nine. This is a second, independent corroboration of the
+neural negative and a stronger one: the networks are not near the five discrete algorithms,
+*and* they are not interior points of the natural continuous family containing them. Phase F
+also replicated on a fresh graph stream and fresh design — the first result here to survive
+that step.
 
 ---
 
@@ -120,6 +172,16 @@ Symbolic separation gate. Seconds, numpy only.
 python run_identifiability.py --graphs 12 --nodes 24
 ```
 Which algorithm pairs separate at which graph depth. Minutes.
+
+```bash
+python run_family_spike.py --gate 0                    # the cheapest falsification, seconds
+python run_family_spike.py --gate all                  # full Phase F ladder, ~10 min, CPU only
+python run_family_spike.py --reproduce-response-table  # regenerates response.py's numbers
+```
+Phase F. `--gate 0` checks that the parameterised family reproduces all five reference
+algorithms bit-identically and that every axis moves the observable; it is the fastest way to
+tell whether anything in `fpid/family.py` has been broken. No training and no CUDA — the
+trained checkpoints in `artifacts/*.pt` are loaded, never fitted.
 
 ```bash
 python run_noise_robustness.py --graphs 10 --nodes 20
@@ -163,7 +225,9 @@ evaluates the pre-registered gates in order. ~100 min. `--smoke` runs the plumbi
 | `fpid/noisy.py` | Four noise axes for testing predicate robustness |
 | `fpid/neural.py` | MPNN, `GatedMPNN` (Dijkstra-like commitment), `NeuralExecutor` |
 | `fpid/train.py` | Batched training, hint / no-hint regimes, dataset generation |
-| `fpid/response.py` | Jacobian of one round; the continuous alternative to the predicates |
+| `fpid/response.py` | Jacobian of one round; `summarise_masked` / `jacobian_pure` are the Phase F additions. **Its old `width` and `row_sum` claims were wrong — the docstring now records both** |
+| `fpid/family.py` | The parameterised relaxation family. All five references are exact points in it (`REFERENCE_LIMITS`); vectorised `family_step`, `softmin`, sender-set selection |
+| `fpid/estimate.py` | Parameter estimation with a residual that has a scale: closed forms for α and γ, temperature calibration, `FitReport.withheld` for refusals |
 
 `THEORY.md` holds the definitional layer: `I,D`-equivalence, the minimal separating set,
 and five propositions with witnesses — including Proposition 5, why a nearest-reference
@@ -171,12 +235,20 @@ label is vacuous once `d_near` approaches the reference-to-reference scale.
 
 Findings, in order written: `FINDINGS_PHASE_A.md`, `FINDINGS_NOISE.md`,
 `FINDINGS_IDENTIFIABILITY.md`, `FINDINGS_SEED_CONTROL.md`, `FINDINGS_OOD_NEGATIVE.md`,
-`FINDINGS_SHALLOW_SIGNALS.md`, `FINDINGS_E1_E2.md`, `FINDINGS_E3.md` (covers E3 and E3b).
+`FINDINGS_SHALLOW_SIGNALS.md`, `FINDINGS_E1_E2.md`, `FINDINGS_E3.md` (covers E3 and E3b),
+`FINDINGS_DECOMPOSITION.md`, `FINDINGS_FAMILY.md` (Phase F), `FINDINGS_RESIDUAL.md` (exploratory follow-up to Phase F -- carries its own frozen confirmatory design, and is
+labelled throughout as not-yet-a-result).
 
 Pre-registrations: `PREREGISTRATION_E1E2.md`, `PREREGISTRATION_E3.md`,
-`PREREGISTRATION_E3B.md`. Write one for every experiment from here on.
+`PREREGISTRATION_E3B.md`, `PREREGISTRATION_FAMILY.md`. Write one for every experiment from
+here on. `GATE1_DISQUALIFICATIONS.md` is the companion Phase F turned out to need: the
+pre-registration said a confound found at Gate 1 disqualifies that parameter from Gate 2's
+criteria, and that file is the disqualification — written between the two gates, before
+Gate 2 ran, and recording a k-grid error in the pre-registration itself.
 
-Experiment runners: `run_e1_e2.py` (E1+E2), `run_e3.py` (E3), `run_e3b.py` (E3b). The
+Experiment runners: `run_e1_e2.py` (E1+E2), `run_e3.py` (E3), `run_e3b.py` (E3b),
+`run_decompose.py` (orthogonality decomposition), `run_family_spike.py` (Phase F),
+`run_residual_audit.py` (exploratory structural audit of the Phase F residual). The
 shared gate machinery — admission, Fisher exact, family collapse, probe-graph depth
 filtering, predicate ablation — lives in `run_e1_e2.py` and is imported by the others.
 
@@ -222,6 +294,36 @@ seeds (+0.371, below baseline, effect size sign-flipped). Only surviving lead: `
 (rounds in which the model *raises* an estimate, which no correct relaxation does) separates
 the two training groups in the same direction on both runs with growing effect size (Cohen's
 d +0.69 then +1.63) — it classifies *provenance* better than it predicts OOD *magnitude*.
+
+**F — parametric family: DEAD, and informatively so.** Full account in
+`FINDINGS_FAMILY.md`; the five things worth carrying forward:
+
+1. **The family contains the algorithms exactly.** All five references reproduced at
+   `max |d_family − d_ref| = 0.0` — bit-identical — over 20 graphs × 24 rounds. Prim is the
+   γ=0 point (keying on `w` alone is a zero path discount), which is why a continuous discount
+   beats a discrete `key ∈ {sum, weight}` axis.
+2. **Damping and path discount are exact, closed-form observables.**
+   `α = 1 − |J[v,v]|` and `γ = off_row/α` on rows that are reached *and still moving*, verified
+   to 4 decimals. Where the estimator answers, α p90 error is 0.0039. And
+   `row_sum = 1 − α(1−γ)` is a **membership test with no fitted parameters at all**.
+3. **It replicated** — fresh graph stream, fresh design, nothing refitted, every headline
+   number reproduced. The first result in this project to survive that step.
+4. **Four confounds are structural, not resolution shortfalls.** α ↔ c (commitment drives
+   `a_eff → 0`, which is what lowering α does), τ ↔ γ, τ ↔ selection (one sender leaves no
+   distribution for a temperature to spread over), γ ↔ c — all at SNR 0.00. **More probe
+   graphs cannot fix these**, because at the level of the response operator the moves are
+   identical. Temperature is effectively not estimable at all (median relative error 1.000).
+5. **The networks are not in the family.** Six of nine E3 checkpoints fit at chi2 of order
+   10^4, against an in-family holdout at 0.0000 and a deliberately out-of-family control at
+   15.0 — so *seven of the nine sit further from this family than the negative control does* —
+   with
+   non-zero row-sum deviation on all nine, and fitted parameters that move substantially when
+   the measurement window changes from 8 rounds to 6 while family members recover identically.
+
+So the reframe's premise fails at the last step. "A family containing both the algorithms and
+the networks" was achieved only for the algorithms. This is a second, independent, and stronger
+corroboration of the neural negative: the networks are not near the five discrete algorithms,
+*and* they are not interior points of the natural continuous family containing them.
 
 ---
 
@@ -499,16 +601,40 @@ both need a pre-registered exploratory/confirmatory split on disjoint seeds befo
    sustained-tolerance basis and ~29% of the fingerprint comes back.
 2. **Measure where the networks actually vary.** `fpid/response.py` estimates the round
    Jacobian `J[v,u] = -d(d_v(t+1))/d(d_u(t))` by finite differences, identically for
-   symbolic and neural executors. Two statistics work:
-   - **median nonzeros per active row** — every hard-`min` reference is **exactly 1.00 at
-     every support threshold**, because `min` depends on one parent. Networks sit at 2-3
-     across a 10x threshold range, and no threshold flips the direction. Soft aggregation is
-     a structural property no reference in the family has, detected without reference to any
-     of them.
+   symbolic and neural executors.
+
+   > **CORRECTED BY PHASE F — read this before using the statistics below.** This section
+   > previously recommended **median nonzeros per active row** ("every hard-`min` reference is
+   > exactly 1.00 at every support threshold; networks sit at 2-3"). That is **wrong**.
+   > Measured by `run_family_spike.py --reproduce-response-table`, Bellman-Ford sits at
+   > **2.00 from round 3**, not 1.00. The one-sided difference double-counts at a hard-min
+   > tie: at a converged node `d_v == d_u + w`, so lowering *either* argument moves the min by
+   > the full `eps` and both `J[v,v]` and `J[v,u]` read 1. Bellman-Ford enters that state
+   > around round 3 on depth-5 instances; the selection-based algorithms do not, because only
+   > one node is active per round. The "2-3 neighbours versus exactly 1" separation is
+   > therefore substantially an estimator artefact and must not be cited. The vacuity result
+   > it was usually cited alongside (0.37-0.40 against a 0.303 reference-to-reference median)
+   > is independent and stands.
+   >
+   > `row_sum` was also mislabelled as the damping coefficient. It is `1 - alpha(1-gamma)`,
+   > i.e. **identically 1 whenever gamma = 1, whatever alpha is**, because softmin weights are
+   > a partition of unity. Use `summarise_masked` instead of `summarise` and read:
+   > `alpha = 1 - |J[v,v]|` and `gamma = (off-diagonal row sum) / alpha`, both exact on rows
+   > that are reached *and still moving*; and `row_sum = 1 - alpha(1-gamma)` as a
+   > **parameter-free family-membership test**.
+
    - **diagonal fraction** `||diag J|| / ||J||` — a continuous, purely *observational*
      measure of commitment, which constraint 4 says cannot be read off internals. BF falls
      0.90 -> 0.50 and stays; truncated-BF tracks it then jumps to exactly 1.00 at round `k`;
-     Dijkstra/SPFA/Prim sit at 0.88-1.00.
+     Dijkstra/SPFA/Prim sit at 0.88-1.00. **This one reproduces** and is the surviving
+     recommendation.
+   - Phase F also establishes what this observable *cannot* do, for reasons no amount of extra
+     data fixes: damping and commitment are the same move on a one-round Jacobian
+     (`alpha <-> c` at SNR 0.00), aggregation temperature is invisible unless it is comparable
+     to the best-minus-second-best message gap (which damping inflates from 3.9 at alpha=1 to
+     29.5 at alpha=0.5), and a rule damped below ~alpha=0.2 moves too little per round to pass
+     the secant threshold at all. Separating commitment from damping needs a *sustained*
+     measurement — the same fix repair (1) above proposes for `poked_settled`.
 
    Two predictions here were falsified and the reasons are documented in the module: Prim's
    Jacobian does **not** vanish (its value update is diagonal, but `d` is also its selection

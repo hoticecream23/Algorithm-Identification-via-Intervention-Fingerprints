@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 
 from .algorithms import UNREACHED, State
 from .graphs import Graph
@@ -219,6 +219,38 @@ class NeuralExecutor:
             self.step()
             traj.append(self.snapshot())
         return traj
+
+    def step_fn(self):
+        """A pure `d -> d_next` closure at the current state, for `response.jacobian_pure`.
+
+        `jacobian_at` would otherwise `deepcopy` this executor -- and with it the whole torch
+        module -- once per perturbation per round, which is ~200 module copies for a single
+        8-round profile. Here the model is called directly instead.
+
+        A gated model carries its `frozen` mask inside the module and mutates it on every
+        forward, so the mask is snapshotted and restored around each call. Without that, the
+        first perturbation's freezing would leak into all the later ones and the measured
+        operator would depend on the order the columns were probed.
+        """
+        adj, w, is_src = graph_tensors(self.graph, self.source, self.device)
+        halted = self.finished or (
+            self.max_rounds is not None and self.round >= self.max_rounds
+        )
+        frozen0 = getattr(self.model, "frozen", None)
+        if frozen0 is not None:
+            frozen0 = frozen0.clone()
+
+        @torch.no_grad()
+        def run(d: np.ndarray) -> np.ndarray:
+            if halted:
+                return d.copy()
+            if hasattr(self.model, "frozen"):
+                self.model.frozen = None if frozen0 is None else frozen0.clone()
+            x = torch.from_numpy(d / SCALE).float().to(self.device).unsqueeze(0)
+            out = self.model(x, is_src, w, adj)
+            return (out.squeeze(0).cpu().numpy() * SCALE).astype(float)
+
+        return run
 
 
 def neural_ctor(model: MPNN, device="cpu", max_rounds: int | None = None):

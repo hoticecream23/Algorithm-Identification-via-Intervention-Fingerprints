@@ -23,6 +23,15 @@ neural models along dimensions that carry no algorithmic identity, and is nearly
 the dimensions that do. That is the current state of the project; see "What does not" below
 and `FINDINGS_DECOMPOSITION.md` for the mechanism.
 
+The obvious repair was then tried and also failed, which is worth knowing before anyone tries
+it again. If a discrete label is the wrong thing to read off a continuous system, replace
+classification with **parameter estimation** over a family containing both — damping, softness,
+commitment, truncation, selection order. That family does contain all five reference algorithms
+exactly, and damping and path-discount are recoverable in closed form to four decimals. It does
+**not** contain the trained networks: six of nine checkpoints fit at chi-squared of order 10^4
+against an in-family holdout at 0.0000 and a deliberately out-of-family control at 15.0. See
+`FINDINGS_FAMILY.md`.
+
 ## What holds up
 
 **Algorithm identity is only well-defined relative to an intervention class *and* an input
@@ -81,6 +90,8 @@ each reproducible from the command at its top.
 | [FINDINGS_E1_E2.md](FINDINGS_E1_E2.md) | Dijkstra-trained discrimination (blocked on MPNN capacity); hint-free regime (positive) |
 | [FINDINGS_E3.md](FINDINGS_E3.md) | Architecturally distinct procedures — the fair test, and its null; held-out replication |
 | [FINDINGS_DECOMPOSITION.md](FINDINGS_DECOMPOSITION.md) | Why the neural fingerprint fails: signal and noise are orthogonal |
+| [FINDINGS_RESIDUAL.md](FINDINGS_RESIDUAL.md) | Exploratory follow-up: what the networks do that the family cannot -- a state-dependent, sometimes amplifying path gain. Nothing claimed; the frozen confirmatory test is stated |
+| [FINDINGS_FAMILY.md](FINDINGS_FAMILY.md) | Phase F: estimating parameters instead of classifying. The family contains all five algorithms exactly and the trained networks not at all. Also corrects two wrong claims in `fpid/response.py` |
 
 Requires numpy for the symbolic work; PyTorch with CUDA for anything neural.
 
