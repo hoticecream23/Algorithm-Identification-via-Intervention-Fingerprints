@@ -31,6 +31,10 @@ python run_e5.py
 
 # E6 Dijkstra/Prim key-dissociation probe (numpy only, seconds)
 python run_e6.py
+
+# G reference-free discrimination: networks vs each other (no CUDA, ~5 min)
+python run_g.py --stage 1
+python run_g.py --stage 2        # trains 12 fresh checkpoints, needs CUDA (~40 min)
 ```
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA. Run all scripts from the repo root. JAX and DeepMind CLRS are not installed and are not needed.
@@ -94,4 +98,4 @@ These are hard-won; four results in this project evaporated by violating them.
 
 ## Current project status (as of 2026-08-20)
 
-Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches, with the two remaining objections closed: E5 shows the vacuity gap is not a sensitivity-normalisation artefact, and E6's attempt at a sharper Dijkstra/Prim probe failed its own mechanism check informatively (edge-weight raises are as invisible to relaxation as deletions, for the same monotonicity reason). The recommended next action is writing up. See `HANDOFF.md` for the full status table. The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.
+Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches, with the three remaining objections closed: E5 shows the vacuity gap is not a sensitivity-normalisation artefact; E6's attempt at a sharper Dijkstra/Prim probe failed its own mechanism check informatively (edge-weight raises are as invisible to relaxation as deletions, for the same monotonicity reason); and **G closed the reference-free question** — the fingerprints do not separate the networks from *each other* either (chance purity on 12 fresh seeds, 0/8 on gated-vs-plain, 11 cross-arm pairs bit-identical), which removes the last defence available to E3's null, that the label rather than the instrument was broken. The recommended next action is writing up. See `HANDOFF.md` for the full status table and `ROUTES_TO_POSITIVE.md` for the ranked menu of what remains open — after G its top item is §2.1 + §2.2. The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.

@@ -16,12 +16,20 @@ of 9 checkpoints remain vacuous under a measure built to discount baseline jumpi
 vacuity gap is not a normalisation artefact. **E6 attempted to close the Dijkstra/Prim
 boundary and its manipulation check failed informatively**: raising an edge weight is
 monotonically invisible to relaxation, symmetric across both algorithms, so the boundary still
-rests on a single intervention — now a documented limitation rather than open work. **Next
-action: write up.** `THEORY.md` holds the definitional layer. Two concrete repairs are
-documented under "If someone does resume the neural side" — both candidates, neither claimed,
-and one of them is corrected by Phase F. `FINDINGS_RESIDUAL.md` carries an exploratory answer to
-"what are the networks doing instead" with its own frozen confirmatory design; it is explicitly
-not a result. No further pre-registered items remain queued; what's left is the write-up.
+rests on a single intervention — now a documented limitation rather than open work. **G then
+closed the last question the vacuity argument had left standing**: every neural experiment had
+compared network to *symbolic reference*, which Proposition 5 calls vacuous, so E3's null could
+always be answered "your label is broken, not your instrument." G asked the reference-free
+question instead — do the fingerprints separate the networks *from each other*? — and it is
+**NULL at both stages**, at chance purity on 12 fresh seeds and **0/8** on the `gated`/`plain`
+subset where the procedural difference is learned rather than imposed by the deploy harness.
+Eleven cross-arm pairs are *bit-identical*. **Next action: write up.** `THEORY.md` holds the
+definitional layer. `ROUTES_TO_POSITIVE.md` is a ranked menu of everything still open; after G
+its top item is §2.1 + §2.2 (repair the two pinned predicates, then re-check the orthogonality
+metric that closed the door on probe redesign). `FINDINGS_RESIDUAL.md` carries an exploratory
+answer to "what are the networks doing instead" with its own frozen confirmatory design; it is
+explicitly not a result. No further pre-registered items remain queued; what's left is the
+write-up.
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA
 available, torch_geometric 2.8. JAX and DeepMind CLRS are **not** installed and are not
@@ -153,6 +161,7 @@ superseded — treat as history).
 | F+ | Exploratory: what the networks do instead (`run_residual_audit.py`) | **Done, EXPLORATORY** — state-dependent path gain; needs fresh seeds |
 | E5 | Sensitivity normalisation vs Proposition 5's vacuity gap | **Done, UNCHANGED** — 7/9 checkpoints stay vacuous under a normalised measure |
 | E6 | Direct Dijkstra/Prim key-dissociation probe | **Done, MANIPULATION FAILED** — weight-raise is monotonically invisible; boundary still rests on one intervention |
+| G | Reference-free discrimination: do fingerprints separate networks from *each other*? | **Done, NULL** — chance purity on 12 fresh seeds; 0/8 on gated-vs-plain; 11 cross-arm pairs bit-identical |
 | — | Full model zoo (60-100 models) | Not started; **not justified** without a new idea |
 
 **Phase F in one line** (`FINDINGS_FAMILY.md`, `PREREGISTRATION_FAMILY.md`,

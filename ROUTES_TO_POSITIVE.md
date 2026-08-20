@@ -135,7 +135,28 @@ contribute. Validate on the symbolic side (separation must be unchanged) exactly
 
 ---
 
-## 3. Change the question: discriminate networks from *each other* ★★ HIGHEST EV
+## 3. Change the question: discriminate networks from *each other* ★★ ~~HIGHEST EV~~ — **RUN, AND NULL**
+
+> **Resolved 2026-08-20 by Experiment G** (`PREREGISTRATION_G.md`, `FINDINGS_G.md`,
+> `run_g.py`). The reasoning below is sound and the question was worth asking; the answer is no.
+>
+> - **3.1** — 1-NN arm purity: 5/9 at Stage 1, **3/12 at chance on twelve fresh seeds**. The
+>   `gated`-vs-`plain` subset, the only pair whose difference is learned rather than imposed by
+>   `neural_ctor`'s `max_rounds`, is **0/8** with a sign-flipping gap. **NULL.**
+> - **3.2** — the Phase-F embedding scored 8/9 and 9/12 at a 6-round window and **failed the
+>   window-stability gate at both stages** (7/9, then 6/12 at 8 rounds, arm assignment changing).
+>   The threat measured in `FINDINGS_FAMILY.md` was real. Not usable until the window dependence
+>   is fixed.
+> - **3.3** — unchanged in status: a post-hoc read with no primary result to support it.
+>
+> The mechanism is the useful part: **21/27 then 21/48 between-arm distances sit at or below
+> B0's cross-seed noise floor of 0.094, and eleven cross-arm pairs are bit-identical.** The
+> instrument does not resolve these objects at all. That strengthens **§2.1** rather than
+> weakening it — too few informative slots is exactly what a fingerprint that is ~29% pinned
+> constant would produce. The post-G ordering is **§2.1 + §2.2 first**, then §5.1, then §7–§8.
+>
+> Everything below is left as written, because the argument for asking was correct and the
+> record should show what was expected before the answer arrived.
 
 This is the best idea in this document, and the reason is that the project has been asking a
 question Proposition 5 says is unanswerable, while never asking the neighbouring one that is.
@@ -390,12 +411,15 @@ constant suffices for the relaxation family. §7.2 gives the empirical side.
 
 If only three things get done:
 
-1. **§3 — the neural-vs-neural discrimination run** (3.1 + 3.2 + 3.3 as one pre-registered pass).
-   Existing checkpoints, no new code for 3.1, a visible lead in 3.2, and it asks the question the
-   project actually cares about instead of the one Proposition 5 forbids.
+1. ~~**§3 — the neural-vs-neural discrimination run.**~~ **Done 2026-08-20, NULL at both
+   stages.** See the banner at §3 and `FINDINGS_G.md`. Do not re-run it; the question is closed
+   and the pre-registration forbids a follow-up statistic on the same data.
 2. **§2.1 + §2.2 — repair the pinned predicates, and recheck the orthogonality metric.** ~29% of
    every neural fingerprint is currently a constant, and the number that closed the door on probe
-   redesign is computed against a proxy that ranks an indispensable probe second-last.
+   redesign is computed against a proxy that ranks an indispensable probe second-last. **Now the
+   top item**, and better motivated after G: an instrument in which eleven cross-arm model pairs
+   are bit-identical has too few informative slots, which is precisely what a pinned constant
+   predicts.
 3. **§5.1 — Family-2 with a state-dependent gain.** The specification is written, the per-node
    measurements exist, the acceptance threshold is already frozen, and success would be an actual
    positive identification of a neural reasoner.

@@ -130,37 +130,119 @@ tightest `γ_v` IQRs (0.290 / 0.236 / 0.312 against 0.344–0.841 elsewhere), co
 
 ### Stage 1 verdict
 
-**INDETERMINATE**, with the critical `gated`-vs-`plain` subset **NULL**.
+**INDETERMINATE**, with the critical `gated`-vs-`plain` subset **NULL**. Stage 2 is the verdict
+of record and it resolves this downward, not upward.
 
 ---
 
-## Stage 2 — confirmatory
+## Stage 2 — confirmatory. **NULL.**
 
-*Running. Twelve fresh checkpoints (`plain_710–713`, `gated_810–813`, `halt_910–913`), fresh
-probe graphs, `run_decompose.py`'s exact training configuration. Only the primary statistic and
-the critical subset are recomputed, under thresholds fixed in `PREREGISTRATION_G.md` §8.*
+Twelve fresh checkpoints (`plain_710–713`, `gated_810–813`, `halt_910–913`), a fresh probe-graph
+draw (seed 21, depths 5–7), `run_decompose.py`'s exact training configuration. Thresholds fixed
+in `PREREGISTRATION_G.md` §8 before this ran.
+
+Controls again all pass: NC1 reproduces the size-2 minimal separating set; 12/12 admit
+(MAE 0.273–2.365); `gated` frozen 0.59–1.00; `halt` fires at rounds 2.5–3 inside k = 8; NC3
+pseudo-arm purity 0/12.
+
+| statistic | Stage 1 (9 models) | Stage 2 (12 models) | threshold | verdict |
+|---|---|---|---|---|
+| **primary** 1-NN arm purity | 5/9, p = 0.039 | **3/12, p = 0.024** | ≥ 10/12 | **NULL** |
+| **critical** gated vs plain | 2/6 (chance 2.4) | **0/8, p = 1.00** | 8/8 | **NULL** |
+| S1 between − within gap | +0.0369, p = 0.014 | +0.0416, p = 0.017 | descriptive | — |
+| S1 gap, gated vs plain only | +0.0216, p = 0.30 | **−0.0078, p = 0.60** | descriptive | sign flips |
+| S2 normalised distance | 5/9, p = 0.025 | 1/12, p = 0.50 | ≥ 10/12 | **NULL** |
+| S3 Phase-F window stability | UNSTABLE | UNSTABLE (9/12 at 6r, 6/12 at 8r) | must match | disqualified |
+
+**Purity is at chance.** 3/12 against a chance level of 3/11 ≈ 3.3/12. The `gated`-vs-`plain`
+subset is **0/8** — not one of the eight networks has a same-arm nearest neighbour — and its gap
+statistic **changes sign** between stages, which is what a null looks like when it is measured
+twice.
+
+*(The exact p of 0.024 on a chance-level purity is not a contradiction and is not evidence of
+anything. Ties dominate this distance matrix, and the pre-registered rule scores a tie against
+the hypothesis, so most relabellings score 0; achieving 3 is uncommon under the null but is
+still nowhere near the 10/12 the ladder requires. The p-value and the threshold are answering
+different questions, and only the threshold is the criterion.)*
+
+### The one thing that does replicate, and what it is
+
+The between-minus-within **gap** replicates cleanly in direction and magnitude: +0.0369
+(p = 0.014) then +0.0416 (p = 0.017), on disjoint seeds and disjoint probe graphs. So there is a
+real, reproducible arm structure in fingerprint space.
+
+It is not usable and it is not about learned procedure. It vanishes on the `gated`/`plain`
+subset — where it flips sign — so it is carried by `halt`, whose trajectories are truncated at
+`max_rounds = 8` by the deployment harness. **The replicating signal is the harness argument,
+not the network.**
+
+### Why: on fresh seeds, differently-built networks are bit-identical
+
+| quantity | Stage 1 (9) | Stage 2 (12) |
+|---|---|---|
+| mean within-arm δ | 0.0318 | 0.0555 |
+| mean between-arm δ | 0.0688 | 0.0972 |
+| between-arm pairs ≤ B0's noise floor (0.094) | 21/27 | 21/48 |
+| **exactly-identical pairs (δ = 0.000)** | 5 of 36 | **18 of 66** |
+| **of those, cross-arm** | 2 | **11** |
+
+Eleven pairs of networks **from different arms** have bit-identical fingerprints — including
+`gated_810 ≡ plain_710 ≡ plain_711 ≡ plain_713` and `halt_910 ≡ plain_710`. Within-arm distances
+now reach 0.200, larger than the between-arm mean.
+
+The instrument does not resolve these objects at all. That is a stronger and more specific
+statement than "the label is wrong."
+
+---
+
+## Verdict
+
+**Experiment G is NULL at both stages, and the reference-free question is closed.**
+
+E3's null could be answered: *"your label is broken, not your instrument"* — Proposition 5 says
+nearest-reference comparison is vacuous, so E3 never tested the fingerprint itself. That defence
+is now gone. Asked the question that needs no references and to which Proposition 5 does not
+apply, intervention fingerprints **do not** separate networks built to differ in procedure, and
+the reason is measurable: their fingerprints sit inside each other's seed noise, and a sixth of
+all pairs are identical.
+
+The neural side of this project is finished on strictly stronger grounds than E3 left it.
 
 ---
 
 ## What this costs and what it buys
 
-The reference-free question is now asked and answered, which is worth something regardless of
-sign: the neural side's negative no longer rests solely on a comparison Proposition 5 says is
-vacuous. E3 could be answered "your label is broken, not your instrument." That objection is now
-closed from the other side — the instrument does not separate these networks from each other
-either, and the reason is measurable: their fingerprints are inside each other's seed noise.
+**It closes the best remaining objection to the neural negative**, which is worth more than
+another qualified null. `ROUTES_TO_POSITIVE.md` ranked §3 as the highest-expected-value route in
+the whole document, on a correct observation — the project had been asking a question
+Proposition 5 forbids while never asking the neighbouring one that is legitimate. The
+neighbouring question has now been asked, twice, with fresh seeds and fresh graphs, and it
+answers the same way. Nobody has to wonder about it again.
 
-Two things `ROUTES_TO_POSITIVE.md` ranked highly are downgraded by this run:
+Three things `ROUTES_TO_POSITIVE.md` ranked highly are downgraded by this run:
 
-- **§3.1** (fingerprint-space clustering) is INDETERMINATE at Stage 1 and NULL on the subset
-  that matters.
-- **§3.2** (the Phase-F embedding) is window-unstable, so the disjoint clusters in
-  `FINDINGS_FAMILY.md`'s Gate-3 table cannot be read as an arm classifier without first fixing
-  the window dependence. That is a concrete, fixable defect rather than a dead end — but it is
-  not a positive result today.
+- **§3.1** (fingerprint-space clustering) is **NULL** at the confirmatory stage, and **0/8** on
+  the subset where the procedural difference is learned rather than imposed.
+- **§3.2** (the Phase-F embedding) is window-unstable at **both** stages. Its purity looked
+  excellent both times at a 6-round window (8/9, then 9/12) and degraded at 8 rounds (7/9, then
+  6/12) with the arm assignment changing. The disjoint `gated`/`halt` clusters in
+  `FINDINGS_FAMILY.md`'s Gate-3 table are therefore not usable as an arm classifier until the
+  window dependence is fixed. That is a concrete, fixable defect rather than a dead end — but it
+  is not a positive result, and the fact that it replicated *as unstable* makes it much less
+  likely that a longer window would rescue it.
+- **§3.3** (residual features) is unchanged in status: still a post-hoc read, now with no
+  primary result to support.
 
 What survives untouched is §2 (the pinned-predicate repair and the orthogonality-metric
 recheck), §4 (new observables), §5.1 (Family-2 with a state-dependent gain), and everything
-symbolic in §7–§8. §2.1 is now *better* motivated, not worse: an instrument whose between-arm
-distances sit inside its own seed noise is an instrument with too few informative slots, which
-is exactly what a fingerprint that is ~29% pinned constant would produce.
+symbolic in §7–§8.
+
+**§2.1 is now considerably better motivated.** An instrument in which a sixth of all model pairs
+are *bit-identical* — including eleven cross-arm pairs — is an instrument with far too few
+informative slots. That is exactly the signature a fingerprint would have if ~29% of it were a
+pinned constant, which is what `FINDINGS_DECOMPOSITION.md` §3 measured and what nothing has yet
+fixed. G did not test that repair; it strengthened the case for running it.
+
+The honest ordering after G: **§2.1 + §2.2 first** (repair the instrument, then re-check the
+orthogonality metric that closed the door on probe redesign), then **§5.1**, then the symbolic
+and theoretical work in §7–§8, which was never blocked on any of this.

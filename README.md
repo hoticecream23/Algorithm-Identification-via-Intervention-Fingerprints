@@ -42,6 +42,16 @@ mechanism check failed: raising an edge weight turns out to be as invisible to r
 deleting one, for the same monotonicity reason, so the boundary still rests on a single probe
 (`FINDINGS_E6.md`).
 
+One question survived all of that, because every neural experiment above compares a network to a
+*symbolic reference*, and Proposition 5 says that comparison is vacuous. Nothing in that argument
+forbids the networks being separable **from each other** — and the discrimination claim never
+needed the references at all. Asked directly, with a frozen decision rule and an exact
+permutation null over every partition rather than a sampled one: also no. Intervention
+fingerprints do not separate networks built to differ in procedure — chance purity on twelve
+fresh seeds, and 0/8 on the one pair whose difference is learned rather than imposed by the
+deployment harness. Eleven pairs of networks from *different* architectures turn out to have
+bit-identical fingerprints (`FINDINGS_G.md`). The neural side is now closed from both directions.
+
 ## What holds up
 
 **Algorithm identity is only well-defined relative to an intervention class *and* an input
@@ -104,6 +114,8 @@ each reproducible from the command at its top.
 | [FINDINGS_FAMILY.md](FINDINGS_FAMILY.md) | Phase F: estimating parameters instead of classifying. The family contains all five algorithms exactly and the trained networks not at all. Also corrects two wrong claims in `fpid/response.py` |
 | [FINDINGS_E5.md](FINDINGS_E5.md) | Sensitivity normalisation: does it close the vacuity gap? No -- 7/9 checkpoints stay vacuous under a normalised measure |
 | [FINDINGS_E6.md](FINDINGS_E6.md) | Attempt to close the Dijkstra/Prim boundary with a direct key-dissociation probe; mechanism check failed informatively -- weight raises are monotonically invisible |
+| [FINDINGS_G.md](FINDINGS_G.md) | The reference-free question: do fingerprints separate the networks from *each other*? Null at both stages, confirmed on 12 fresh seeds |
+| [ROUTES_TO_POSITIVE.md](ROUTES_TO_POSITIVE.md) | Ranked menu of routes still open to a positive result, with mechanism, cost and a frozen decision rule where one is possible |
 
 Requires numpy for the symbolic work; PyTorch with CUDA for anything neural.
 

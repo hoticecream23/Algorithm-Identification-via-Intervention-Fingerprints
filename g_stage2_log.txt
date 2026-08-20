@@ -1,0 +1,192 @@
+stage=2  n=24  probe_graphs=8  tol=2.5  stability=0.8  graph_seed=21
+pre-registered decision rule: PREREGISTRATION_G.md
+
+==============================================================================
+STAGE 2 -- training 12 fresh checkpoints on cuda
+==============================================================================
+  plain_710    MAE  1.465  saved
+  plain_711    MAE  0.562  saved
+  plain_712    MAE  1.437  saved
+  plain_713    MAE  0.658  saved
+  gated_810    MAE  0.986  saved
+  gated_811    MAE  1.331  saved
+  gated_812    MAE  0.828  saved
+  gated_813    MAE  2.723  saved
+  halt_910     MAE  1.068  saved
+  halt_911     MAE  0.286  saved
+  halt_912     MAE  0.386  saved
+  halt_913     MAE  0.477  saved
+
+probe-graph depths: [5, 6, 6, 7, 5, 5, 6, 5]  (median 5.5)
+
+==============================================================================
+NC1 -- instrument health: are the five references still separated?
+==============================================================================
+  unseparated pairs: none
+  minimal separating set: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+  => PASS
+==============================================================================
+MANIPULATION CHECK -- are the architectural differences actually active?
+==============================================================================
+  gated_810    gated  MAE  0.761  frozen  0.92  median fire round   1.0
+  gated_811    gated  MAE  1.150  frozen  1.00  median fire round   2.0
+  gated_812    gated  MAE  0.970  frozen  0.59  median fire round   1.0
+  gated_813    gated  MAE  2.365  frozen  1.00  median fire round   1.0
+  halt_910     halt   MAE  0.980  frozen n/a    median fire round   2.5
+  halt_911     halt   MAE  0.309  frozen n/a    median fire round   3.0
+  halt_912     halt   MAE  0.273  frozen n/a    median fire round   3.0
+  halt_913     halt   MAE  0.557  frozen n/a    median fire round   3.0
+  plain_710    plain  MAE  1.291  frozen n/a    median fire round   1.0
+  plain_711    plain  MAE  0.531  frozen n/a    median fire round   1.0
+  plain_712    plain  MAE  1.392  frozen n/a    median fire round   2.0
+  plain_713    plain  MAE  0.751  frozen n/a    median fire round   1.0
+
+  MC1 admission (MAE < 2.5): 12/12 admitted  PASS
+  MC2 gate fires (gated frozen > 0.50): PASS
+  MC3 response room (halt fires < k=8): PASS
+
+  => PASS
+
+==============================================================================
+Fingerprinting checkpoints
+==============================================================================
+  gated_810
+  gated_811
+  gated_812
+  gated_813
+  halt_910
+  halt_911
+  halt_912
+  halt_913
+  plain_710
+  plain_711
+  plain_712
+  plain_713
+
+==============================================================================
+PRIMARY -- 1-NN arm purity in fingerprint space (raw distance, of record)
+==============================================================================
+
+                  gated_810  gated_811  gated_812  gated_813   halt_910   halt_911   halt_912   halt_913  plain_710  plain_711  plain_712  plain_713
+    gated_810           -        0.200      0.000      0.077      0.026      0.167      0.152      0.162      0.000      0.000      0.082      0.000
+    gated_811         0.200        -        0.192      0.094      0.026      0.154      0.139      0.150      0.196      0.196      0.080      0.173
+    gated_812         0.000      0.192        -        0.074      0.023      0.128      0.108      0.125      0.000      0.000      0.078      0.000
+    gated_813         0.077      0.094      0.074        -        0.000      0.128      0.114      0.125      0.075      0.077      0.000      0.074
+    halt_910          0.026      0.026      0.023      0.000        -        0.000      0.029      0.000      0.000      0.000      0.000      0.024
+    halt_911          0.167      0.154      0.128      0.128      0.000        -        0.051      0.000      0.179      0.175      0.154      0.171
+    halt_912          0.152      0.139      0.108      0.114      0.029      0.051        -        0.053      0.167      0.158      0.139      0.158
+    halt_913          0.162      0.150      0.125      0.125      0.000      0.000      0.053        -        0.158      0.150      0.128      0.146
+    plain_710         0.000      0.196      0.000      0.075      0.000      0.179      0.167      0.158        -        0.000      0.077      0.000
+    plain_711         0.000      0.196      0.000      0.077      0.000      0.175      0.158      0.150      0.000        -        0.077      0.000
+    plain_712         0.082      0.080      0.078      0.000      0.000      0.154      0.139      0.128      0.077      0.077        -        0.075
+    plain_713         0.000      0.173      0.000      0.074      0.024      0.171      0.158      0.146      0.000      0.000      0.075        -  
+
+  NC2 non-degeneracy: within-arm distances min 0.0000 max 0.2000  (B0 cross-seed mean 0.042, worst 0.094)
+    => PASS
+
+  three arms, raw distance
+    1-NN arm purity      3/12   (chance 27%, i.e. 3.27/12)
+    exact p              0.0242   over 5775 partitions (floor 0.0002)
+    S1 between - within  +0.0416   exact p 0.0166   [descriptive]
+    => NULL
+
+==============================================================================
+NC3 -- pseudo-arm control: regroup by seed index, not architecture
+==============================================================================
+  {plain_700, gated_800, halt_900}, ... -- groups sharing no architectural
+  property. Purity here must sit near chance, or the statistic is not reading
+  architecture and the primary is void.
+
+    pseudo-arm 1-NN purity 0/12
+    => PASS
+
+==============================================================================
+CRITICAL SUBSET -- gated vs plain (halt truncates by construction, not by
+learning, so it must not carry the result)
+==============================================================================
+
+                  gated_810  gated_811  gated_812  gated_813  plain_710  plain_711  plain_712  plain_713
+    gated_810           -        0.200      0.000      0.077      0.000      0.000      0.082      0.000
+    gated_811         0.200        -        0.192      0.094      0.196      0.196      0.080      0.173
+    gated_812         0.000      0.192        -        0.074      0.000      0.000      0.078      0.000
+    gated_813         0.077      0.094      0.074        -        0.075      0.077      0.000      0.074
+    plain_710         0.000      0.196      0.000      0.075        -        0.000      0.077      0.000
+    plain_711         0.000      0.196      0.000      0.077      0.000        -        0.077      0.000
+    plain_712         0.082      0.080      0.078      0.000      0.077      0.077        -        0.075
+    plain_713         0.000      0.173      0.000      0.074      0.000      0.000      0.075        -  
+
+  gated vs plain, raw distance
+    1-NN arm purity      0/8   (chance 43%, i.e. 3.43/8)
+    exact p              1.0000   over 35 partitions (floor 0.0286)
+    S1 between - within  -0.0078   exact p 0.6000   [descriptive]
+    => NULL
+
+==============================================================================
+S2 -- the same primary under E5's normalised distance  [reported, not of record]
+==============================================================================
+
+  three arms, normalised distance
+    1-NN arm purity      1/12   (chance 27%, i.e. 3.27/12)
+    exact p              0.5030   over 5775 partitions (floor 0.0002)
+    S1 between - within  +0.0149   exact p 0.3063   [descriptive]
+    => NULL
+
+==============================================================================
+S3 -- Phase-F (alpha, gamma) embedding, at two measurement windows
+==============================================================================
+  [6r] gated_810    alpha  0.440  gamma  0.122  chi2       19.8
+  [6r] gated_811    alpha  0.473  gamma  0.274  chi2       53.7
+  [6r] gated_812    alpha  0.424  gamma  0.307  chi2       24.9
+  [6r] gated_813    alpha  0.542  gamma  0.230  chi2     1491.9
+  [6r] halt_910     alpha  0.805  gamma  0.834  chi2     3696.6
+  [6r] halt_911     alpha  0.798  gamma  0.892  chi2    20991.5
+  [6r] halt_912     alpha  0.762  gamma  0.924  chi2    17315.7
+  [6r] halt_913     alpha  0.817  gamma  0.884  chi2    30897.1
+  [6r] plain_710    alpha  0.413  gamma  0.454  chi2     8603.6
+  [6r] plain_711    alpha  0.447  gamma  0.515  chi2    27215.7
+  [6r] plain_712    alpha  0.604  gamma  0.164  chi2     6798.7
+  [6r] plain_713    alpha  0.439  gamma  0.169  chi2     5109.9
+  [6r] 1-NN arm purity 9/12
+  [8r] gated_810    alpha  0.439  gamma  0.156  chi2       26.2
+  [8r] gated_811    alpha  0.488  gamma  0.557  chi2      158.2
+  [8r] gated_812    alpha  0.424  gamma  0.313  chi2       20.1
+  [8r] gated_813    alpha  0.544  gamma  0.295  chi2     1175.3
+  [8r] halt_910     alpha  0.734  gamma  0.774  chi2    15023.2
+  [8r] halt_911     alpha  0.874  gamma  0.851  chi2    27325.2
+  [8r] halt_912     alpha  0.721  gamma  0.919  chi2    14978.9
+  [8r] halt_913     alpha  0.826  gamma  0.777  chi2    60234.8
+  [8r] plain_710    alpha  0.400  gamma  0.458  chi2     4274.1
+  [8r] plain_711    alpha  0.444  gamma  0.536  chi2    18225.4
+  [8r] plain_712    alpha  0.604  gamma  0.359  chi2     5904.1
+  [8r] plain_713    alpha  0  [8r] plain_713    alpha  0.461  gamma  0.138  chi2     2113.6
+  [8r] 1-NN arm purity 6/12
+
+  window stability (identical 1-NN arm assignment at 6r and 8r): UNSTABLE -- the embedding measures the window
+
+==============================================================================
+S4 -- residual-audit features by arm  [post-hoc read, weak evidence]
+==============================================================================
+  checkpoint  arm      g_v IQR   g_v>1     neg
+  gated_810   gated      0.191   12.2%    1.6%
+  gated_811   gated      0.920   44.9%    2.2%
+  gated_812   gated      0.442    9.9%    0.5%
+  gated_813   gated      0.647    6.6%   47.2%
+  halt_910    halt       0.154    2.9%    0.0%
+  halt_911    halt       0.047   60.2%    0.0%
+  halt_912    halt       0.138   52.9%    0.1%
+  halt_913    halt       0.090   36.4%    0.0%
+  plain_710   plain      0.613   25.8%   61.3%
+  plain_711   plain      0.350    4.2%    0.0%
+  plain_712   plain      0.903   37.6%    1.3%
+  plain_713   plain      0.684   12.2%    0.0%
+
+==============================================================================
+VERDICT -- Stage 2 (pre-registered ladder, PREREGISTRATION_G.md)
+==============================================================================
+  primary (three arms, raw): NULL
+  critical subset (gated vs plain): NULL
+  => Stage 2: NULL
+
+  (fingerprint noise floor for reference: 0.094)
+
+wrote g_stage2_results.json
