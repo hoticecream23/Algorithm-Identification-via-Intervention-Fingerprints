@@ -25,6 +25,12 @@ python run_seed_control.py --seeds 6 --epochs 1500 --probe-graphs 10 --budget 24
 
 # E1+E2 suite with smoke test (plumbing check, ~2 min)
 python run_e1_e2.py --smoke
+
+# E5 sensitivity normalisation (no CUDA, loads existing checkpoints, ~1 min)
+python run_e5.py
+
+# E6 Dijkstra/Prim key-dissociation probe (numpy only, seconds)
+python run_e6.py
 ```
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA. Run all scripts from the repo root. JAX and DeepMind CLRS are not installed and are not needed.
@@ -88,4 +94,4 @@ These are hard-won; four results in this project evaporated by violating them.
 
 ## Current project status (as of 2026-08-20)
 
-Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches. The recommended next action is writing up. See `HANDOFF.md` for the full status table and open theoretical threads (E5, E6). The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.
+Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches, with the two remaining objections closed: E5 shows the vacuity gap is not a sensitivity-normalisation artefact, and E6's attempt at a sharper Dijkstra/Prim probe failed its own mechanism check informatively (edge-weight raises are as invisible to relaxation as deletions, for the same monotonicity reason). The recommended next action is writing up. See `HANDOFF.md` for the full status table. The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.

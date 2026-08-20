@@ -21,7 +21,7 @@ from typing import Callable
 import numpy as np
 
 from .algorithms import Executor, State, converged_mask, d_equal
-from .graphs import EPS, INF, Graph
+from .graphs import EPS, INF, Graph, true_sssp
 
 
 @dataclass
@@ -125,6 +125,67 @@ def _lower_tree_edge_weight(ex: Executor, t: Targets) -> None:
         ex.graph.set_weight(u, v, 0.5)
 
 
+def _tree_edge_delta(ex: Executor, t: Targets, u: int, v: int, cap: float = 2.0):
+    """How far `w(u,v)` can rise before `(u,v)` stops being the shortest-path tree
+    edge into `v`, halved and capped -- or `None` if the instance is too degenerate.
+
+    `d_alt` is the shortest distance to `v` on the graph with `(u,v)` deleted: the
+    best route that does not use this edge. If raising `w` by more than
+    `d_alt[v] - d_true[v]` would make that alternative route shorter, so `delta`
+    must stay under half of that gap to keep both arms measuring the same tree.
+    An infinite gap (no alternative route exists) places no upper bound on delta,
+    so only the fixed cap applies. `gap <= 0` is a degenerate instance (already at
+    a tie) and is skipped, as is any resulting delta below the measurement floor.
+    """
+    g_alt = ex.graph.copy()
+    g_alt.delete_edge(u, v)
+    d_alt = true_sssp(g_alt, ex.source)
+    gap = float(d_alt[v] - t.d_true[v])
+    if not (gap > 0):
+        return None
+    delta = min(cap, 0.5 * gap)
+    if delta < 0.1:
+        return None
+    return delta
+
+
+def _raise_tree_edge_weight(ex: Executor, t: Targets) -> None:
+    """Control arm for `dissociate_keys`: raise `w(u,v)` alone, moving both
+    Dijkstra's key (`d[u]+w`) and Prim's key (`w`)."""
+    v = t.near
+    u = _tree_parent(t, v)
+    if u < 0:
+        return
+    delta = _tree_edge_delta(ex, t, u, v)
+    if delta is None:
+        return
+    ex.graph.set_weight(u, v, float(ex.graph.W[u, v]) + delta)
+
+
+def _dissociate_keys(ex: Executor, t: Targets) -> None:
+    """Move Prim's key without moving Dijkstra's.
+
+    Dijkstra selects on `d[u] + w`; Prim selects on `w` alone. Raising `w(u,v)` by
+    `delta` and simultaneously lowering `d[u]` by the same `delta` leaves
+    `d[u] + w` exactly where it was -- Dijkstra's key is invariant -- while `w`
+    itself has strictly risen -- Prim's key has moved. Both edits are computed
+    from the graph and its ground truth only (`_tree_edge_delta`, `t.d_true`), so
+    every algorithm receives the identical poke; whether a given executor's own
+    `ex.d[u]` happened to equal `d_true[u]` at firing time is part of its
+    response, not part of the poke.
+    """
+    v = t.near
+    u = _tree_parent(t, v)
+    if u < 0:
+        return
+    delta = _tree_edge_delta(ex, t, u, v)
+    if delta is None:
+        return
+    ex.graph.set_weight(u, v, float(ex.graph.W[u, v]) + delta)
+    if np.isfinite(ex.d[u]):
+        ex.d[u] = t.d_true[u] - delta
+
+
 def _inject_unreached(ex: Executor, t: Targets) -> None:
     """Give a node the algorithm has not reached yet a small finite estimate.
 
@@ -211,6 +272,22 @@ INTERVENTIONS: list[Intervention] = [
         lambda t: t.far,
         _inject_unreached,
         "state-driven vs queue-driven selection",
+    ),
+    # E6: dissociates Dijkstra's key (d[u]+w) from Prim's (w) directly, rather than
+    # relying on `lower_tree_edge_weight` to move both at once and inferring the
+    # boundary from the manner of the two algorithms' responses.
+    Intervention(
+        "raise_tree_edge_weight",
+        lambda t: t.near,
+        _raise_tree_edge_weight,
+        "control arm: raises w(u,v), moving both Dijkstra's and Prim's key",
+    ),
+    Intervention(
+        "dissociate_keys",
+        lambda t: t.near,
+        _dissociate_keys,
+        "raises w(u,v) while lowering d[u] by the same amount: Dijkstra's "
+        "key (d[u]+w) is invariant, Prim's (w) is not",
     ),
 ]
 

@@ -32,6 +32,16 @@ exactly, and damping and path-discount are recoverable in closed form to four de
 against an in-family holdout at 0.0000 and a deliberately out-of-family control at 15.0. See
 `FINDINGS_FAMILY.md`.
 
+Two remaining objections were closed after that. Was the vacuity gap just an artefact of an
+unnormalised distance measure — models that respond to everything looking "different" for
+free? No: implementing the sensitivity normalisation the code had always promised but never
+performed leaves 7 of 9 checkpoints vacuous under the normalised measure too
+(`FINDINGS_E5.md`). Could a probe built to move Dijkstra's and Prim's selection keys
+independently finally give that pair a second separating intervention? No — the attempt's own
+mechanism check failed: raising an edge weight turns out to be as invisible to relaxation as
+deleting one, for the same monotonicity reason, so the boundary still rests on a single probe
+(`FINDINGS_E6.md`).
+
 ## What holds up
 
 **Algorithm identity is only well-defined relative to an intervention class *and* an input
@@ -92,6 +102,8 @@ each reproducible from the command at its top.
 | [FINDINGS_DECOMPOSITION.md](FINDINGS_DECOMPOSITION.md) | Why the neural fingerprint fails: signal and noise are orthogonal |
 | [FINDINGS_RESIDUAL.md](FINDINGS_RESIDUAL.md) | Exploratory follow-up: what the networks do that the family cannot -- a state-dependent, sometimes amplifying path gain. Nothing claimed; the frozen confirmatory test is stated |
 | [FINDINGS_FAMILY.md](FINDINGS_FAMILY.md) | Phase F: estimating parameters instead of classifying. The family contains all five algorithms exactly and the trained networks not at all. Also corrects two wrong claims in `fpid/response.py` |
+| [FINDINGS_E5.md](FINDINGS_E5.md) | Sensitivity normalisation: does it close the vacuity gap? No -- 7/9 checkpoints stay vacuous under a normalised measure |
+| [FINDINGS_E6.md](FINDINGS_E6.md) | Attempt to close the Dijkstra/Prim boundary with a direct key-dissociation probe; mechanism check failed informatively -- weight raises are monotonically invisible |
 
 Requires numpy for the symbolic work; PyTorch with CUDA for anything neural.
 

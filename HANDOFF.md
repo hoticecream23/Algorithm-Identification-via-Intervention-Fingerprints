@@ -2,7 +2,7 @@
 
 Cold-start context for resuming this project in a fresh session. Read this first.
 
-**Last updated:** 2026-08-13 — symbolic work complete and positive. **The neural side is
+**Last updated:** 2026-08-20 — symbolic work complete and positive. **The neural side is
 finished twice over and now explained twice.** E3 tested the method on its designed target with
 both gates passing and returned a null, E3b failed to replicate the one lead, and the
 decomposition shows why — the fingerprint measures neural models along axes orthogonal to the
@@ -10,11 +10,18 @@ ones carrying algorithmic identity (r = −0.233), with two of seven predicates 
 **Phase F then closed the obvious repair**: a parametric family replacing classification with
 estimation contains all five reference algorithms *bit-identically* and the trained networks at
 chi2 ~10^4 — so the networks are not interior points of the natural continuous family either.
-**Next action: write up.** `THEORY.md` holds the definitional layer. Two concrete repairs are
+**E5 then closed the last standing objection to that whole chain**: sensitivity normalisation
+(the unimplemented claim in `_delete_nontree_edge`'s docstring) does not change the answer — 7
+of 9 checkpoints remain vacuous under a measure built to discount baseline jumpiness, so the
+vacuity gap is not a normalisation artefact. **E6 attempted to close the Dijkstra/Prim
+boundary and its manipulation check failed informatively**: raising an edge weight is
+monotonically invisible to relaxation, symmetric across both algorithms, so the boundary still
+rests on a single intervention — now a documented limitation rather than open work. **Next
+action: write up.** `THEORY.md` holds the definitional layer. Two concrete repairs are
 documented under "If someone does resume the neural side" — both candidates, neither claimed,
 and one of them is corrected by Phase F. `FINDINGS_RESIDUAL.md` carries an exploratory answer to
 "what are the networks doing instead" with its own frozen confirmatory design; it is explicitly
-not a result. Remaining open work is theoretical and symbolic (E5, E6).
+not a result. No further pre-registered items remain queued; what's left is the write-up.
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA
 available, torch_geometric 2.8. JAX and DeepMind CLRS are **not** installed and are not
@@ -144,6 +151,8 @@ superseded — treat as history).
 | E3b | Held-out replication of E3's truncation lead | **Done, FAILED** — direction held, resolution did not |
 | F | Parametric family spike — estimate parameters instead of classifying | **Done, DEAD** — family contains the algorithms exactly; the networks sit at chi2 ~10^4 |
 | F+ | Exploratory: what the networks do instead (`run_residual_audit.py`) | **Done, EXPLORATORY** — state-dependent path gain; needs fresh seeds |
+| E5 | Sensitivity normalisation vs Proposition 5's vacuity gap | **Done, UNCHANGED** — 7/9 checkpoints stay vacuous under a normalised measure |
+| E6 | Direct Dijkstra/Prim key-dissociation probe | **Done, MANIPULATION FAILED** — weight-raise is monotonically invisible; boundary still rests on one intervention |
 | — | Full model zoo (60-100 models) | Not started; **not justified** without a new idea |
 
 **Phase F in one line** (`FINDINGS_FAMILY.md`, `PREREGISTRATION_FAMILY.md`,
@@ -651,8 +660,19 @@ both need a pre-registered exploratory/confirmatory split on disjoint seeds befo
   strongest theoretical contribution available.
 - **Equivalence is distribution-relative as well as intervention-relative** (A3). Stronger
   than the original plan claimed; deserves stating as a result, not a caveat.
-- **Dijkstra vs Prim rests on a single intervention.** Add a probe keyed directly on
-  `d[u]+w` vs `w` before trusting that boundary.
-- **Sensitivity normalisation is unimplemented.** `delete_nontree_edge` exists as the null
-  control; responses should be reported relative to it so a globally jumpy model does not
-  look "different" for free.
+- **Dijkstra vs Prim rests on a single intervention, and stays that way.** E6
+  (`FINDINGS_E6.md`) attempted a direct probe (`dissociate_keys`: raise `w(u,v)` while
+  lowering `d[u]` by the same amount, so `d[u]+w` is exactly invariant and `w` alone has
+  moved) and its mechanism check **failed**: raising an edge weight is monotonically
+  invisible to both algorithms (constraint 3, the same reason the deletion probes are
+  near-silent), so the only live component of the probe was a `d[u]` corruption
+  affecting both algorithms symmetrically. Registering the two new interventions in the
+  suite does not change the minimal separating set or add a second Dijkstra/Prim
+  separator — confirmed by re-running Phase A. A future attempt needs a construction
+  that dissociates the keys without relying on a weight raise.
+- ~~Sensitivity normalisation is unimplemented.~~ **Closed, E5 (`FINDINGS_E5.md`).**
+  Implemented as a pairwise mask on `delete_nontree_edge`'s response
+  (`fpid.identify.informative`, opt-in `normalise=` on `distance`/`classify`/the
+  separation functions). Negative control passed; primary was **UNCHANGED** — 7 of 9 E3
+  checkpoints stay vacuous under the normalised measure. Proposition 5's vacuity gap is
+  not a sensitivity artefact.

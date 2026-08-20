@@ -240,7 +240,10 @@ family rather than the models.
    Is there a family requiring `Ω(log |A|)`, or does a constant always suffice?
 3. Does `≡_{I,D}` coarsen monotonically in the instance depth of `D`? A3 is consistent with
    this and it is unproven.
-4. Sensitivity normalisation. Responses should be reported relative to a null-control
-   intervention that no correct algorithm responds to, so that a globally sensitive model
-   does not appear "different" for free. Currently unimplemented, and Proposition 5's
-   diagnosis suggests it may absorb a substantial constant offset.
+4. ~~Sensitivity normalisation.~~ **Closed, E5 (`FINDINGS_E5.md`).** Implemented as a
+   pairwise mask (`fpid.identify.informative`): a slot is dropped from a comparison only
+   when both fingerprints give the same response there as to the null control. The
+   negative control passed (symbolic separation unchanged), and the primary was
+   **UNCHANGED** — 7 of 9 E3 checkpoints remain further from their nearest reference than
+   two references sit from each other, under a measure explicitly built to discount
+   baseline jumpiness. Proposition 5's vacuity is not a normalisation artefact.

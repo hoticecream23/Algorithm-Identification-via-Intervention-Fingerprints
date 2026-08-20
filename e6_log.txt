@@ -1,0 +1,17 @@
+======================================================================
+MECHANISM CHECK -- did key-dissociation actually install?
+======================================================================
+  dijkstra  raise mean=0.00  dissociate mean=1.00
+  prim      raise mean=0.13  dissociate mean=1.07
+
+  dijkstra weaker-under-dissociate on 0% of instances (need >= 80%)
+  prim comparable (within 1) on 100% of instances (need >= 80%)
+
+  FAIL
+  MC FAILED. The dissociation did not install as designed: Dijkstra's
+  response to dissociate_keys is not weaker than to raise_tree_edge_weight.
+  Reporting MANIPULATION FAILED and stopping -- per the pre-registration,
+  a null read past this point would be about the construction, not the
+  Dijkstra/Prim boundary.
+
+wrote e6_results.json
