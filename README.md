@@ -115,6 +115,7 @@ each reproducible from the command at its top.
 | [FINDINGS_E5.md](FINDINGS_E5.md) | Sensitivity normalisation: does it close the vacuity gap? No -- 7/9 checkpoints stay vacuous under a normalised measure |
 | [FINDINGS_E6.md](FINDINGS_E6.md) | Attempt to close the Dijkstra/Prim boundary with a direct key-dissociation probe; mechanism check failed informatively -- weight raises are monotonically invisible |
 | [FINDINGS_G.md](FINDINGS_G.md) | The reference-free question: do fingerprints separate the networks from *each other*? Null at both stages, confirmed on 12 fresh seeds |
+| [FINDINGS_H.md](FINDINGS_H.md) | Repairing the instrument: the orthogonality verdict is unsupported (r = -0.004 under separating power), and the firing rule was mis-timing every neural probe -- fixed, gap unchanged |
 | [ROUTES_TO_POSITIVE.md](ROUTES_TO_POSITIVE.md) | Ranked menu of routes still open to a positive result, with mechanism, cost and a frozen decision rule where one is possible |
 
 Requires numpy for the symbolic work; PyTorch with CUDA for anything neural.

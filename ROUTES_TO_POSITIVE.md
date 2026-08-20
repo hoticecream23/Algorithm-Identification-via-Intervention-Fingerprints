@@ -68,7 +68,18 @@ worked example of confirmatory practice in an ML subfield that has almost none.
 These are the highest-value non-reframing items because they are *repairs to a diagnosed defect*,
 not new hypotheses.
 
-**2.1 — Reformulate `poked_settled` and `latency` on a sustained-tolerance basis. ★ TOP TIER**
+**2.1 — Reformulate `poked_settled` and `latency` on a sustained-tolerance basis. ★ ~~TOP TIER~~ — RUN; the diagnosis below was WRONG**
+
+> **Resolved 2026-08-21 by Experiment H2** (`FINDINGS_H.md`). The defect is real but the
+> mechanism proposed here is not. `was_converged` already receives `tol = 2.5`, so tolerance was
+> never the binding constraint and a sustained-tolerance repair would have fixed nothing. The
+> actual cause: `interventions.settle_round` anchors its activity threshold on the largest
+> single-round change a run ever makes, which for a network is its round-1 sentinel transient.
+> Networks were therefore poked at **~11% of their active life** against ~45% for the references,
+> which is what pins `poked_settled` to `no`. Repaired (`firing_round(absolute=True)`, 9/9
+> networks now fire at 0.44-0.50), the vacuity gap is **UNCHANGED**: `d_near` and the reference
+> median both fall ~29% and the ratio moves 1.35 -> 1.34. Scale-invariant, exactly as §2.3
+> predicted.
 
 `FINDINGS_DECOMPOSITION.md` §3: these two predicates disagree with Bellman-Ford **100.0%** of the
 time for every neural model, and all four slots where every network disagrees with every reference
@@ -96,7 +107,14 @@ symbolic minimal separating set must be unchanged.
 
 Cost: ~1 hour of implementation, then minutes on CPU with existing checkpoints.
 
-**2.2 — The orthogonality result is measured against the wrong symbolic quantity. ★ TOP TIER**
+**2.2 — The orthogonality result is measured against the wrong symbolic quantity. ★ RUN — CONFIRMED, and the door is reopened**
+
+> **Resolved 2026-08-21 by Experiment H1** (`FINDINGS_H.md`). Confirmed on both counts. Under
+> separating power the correlation is **r = -0.004** (p = 0.993); under unique-separator
+> weighting it is **+0.240**; the published `sv_rate` value of -0.233 has an exact permutation
+> p of **0.5445** and a 95% interval of **[-0.777, +0.510]**. The anti-correlation is neither
+> significant nor robust to the definition of "carries identity". Verdict **UNSUPPORTED**: this
+> licenses *trying* probe redesign (§4), not expecting it to work.
 
 I checked `run_decompose.py:157–176`. The "symbolic pairs" column is the **mean over all ten
 reference pairs of (disagreeing slots / total slots)** for that intervention — an average

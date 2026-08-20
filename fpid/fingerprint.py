@@ -68,6 +68,7 @@ def probe(
     intervention: Intervention,
     budget: int,
     tol: float = TOL,
+    absolute_firing: bool = False,
 ) -> dict[str, str]:
     """Run control / intervened / reference rollouts and read off the predicates.
 
@@ -79,7 +80,7 @@ def probe(
     site = intervention.target_node(targets)
 
     control = alg_ctor(graph.copy(), source).run(budget)
-    t = firing_round(control, budget, tol)
+    t = firing_round(control, budget, tol, absolute=absolute_firing)
 
     g_live = graph.copy()
     ex = alg_ctor(g_live, source)

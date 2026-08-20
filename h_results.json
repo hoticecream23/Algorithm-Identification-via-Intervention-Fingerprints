@@ -1,0 +1,216 @@
+{
+ "h1": {
+  "negative_control": true,
+  "interventions": [
+   "delete_tree_edge_near",
+   "delete_tree_edge_far",
+   "delete_nontree_edge",
+   "insert_improving_edge",
+   "insert_shortcut_from_source",
+   "lower_tree_edge_weight",
+   "corrupt_node_up",
+   "corrupt_node_down",
+   "inject_unreached_node"
+  ],
+  "nv": [
+   0.712962962962963,
+   0.2777777777777778,
+   0.16666666666666666,
+   0.3666666666666667,
+   0.2777777777777778,
+   0.3333333333333333,
+   0.2222222222222222,
+   0.6481481481481481,
+   0.9444444444444444
+  ],
+  "sv_rate": [
+   0.22833333333333333,
+   0.10500000000000001,
+   0.0,
+   0.45833333333333337,
+   0.40595238095238095,
+   0.4333333333333333,
+   0.33499999999999996,
+   0.19666666666666668,
+   0.095
+  ],
+  "sv_pairs": [
+   4.0,
+   3.0,
+   0.0,
+   9.0,
+   7.0,
+   6.0,
+   5.0,
+   4.0,
+   4.0
+  ],
+  "sv_unique": [
+   0.0,
+   0.0,
+   0.0,
+   2.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "minimal_separating_set": [
+   "insert_improving_edge",
+   "inject_unreached_node"
+  ],
+  "r_sv_rate": {
+   "r": -0.23309025822287527,
+   "p": 0.5444775132275133,
+   "ci": [
+    -0.7769470580583608,
+    0.509986746343037
+   ]
+  },
+  "r_sv_pairs": {
+   "r": -0.004104101577311391,
+   "p": 0.992989417989418,
+   "ci": [
+    -0.6664176021059871,
+    0.6618297452026771
+   ]
+  },
+  "r_sv_unique": {
+   "r": 0.24046016599651995,
+   "p": 0.5972222222222222,
+   "ci": [
+    -0.5041867699961184,
+    0.7800229319735426
+   ]
+  },
+  "verdict": "UNSUPPORTED"
+ },
+ "h2": {
+  "manipulation": {
+   "rows": [
+    {
+     "checkpoint": "gated_800",
+     "fire_frac_old": 0.1111111111111111,
+     "fire_frac_new": 0.4444444444444444
+    },
+    {
+     "checkpoint": "gated_801",
+     "fire_frac_old": 0.1111111111111111,
+     "fire_frac_new": 0.4444444444444444
+    },
+    {
+     "checkpoint": "gated_802",
+     "fire_frac_old": 0.16666666666666666,
+     "fire_frac_new": 0.5
+    },
+    {
+     "checkpoint": "halt_900",
+     "fire_frac_old": 0.30952380952380953,
+     "fire_frac_new": 0.5
+    },
+    {
+     "checkpoint": "halt_901",
+     "fire_frac_old": 0.25,
+     "fire_frac_new": 0.5
+    },
+    {
+     "checkpoint": "halt_902",
+     "fire_frac_old": 0.375,
+     "fire_frac_new": 0.5
+    },
+    {
+     "checkpoint": "plain_700",
+     "fire_frac_old": 0.125,
+     "fire_frac_new": 0.4722222222222222
+    },
+    {
+     "checkpoint": "plain_701",
+     "fire_frac_old": 0.09090909090909091,
+     "fire_frac_new": 0.45454545454545453
+    },
+    {
+     "checkpoint": "plain_702",
+     "fire_frac_old": 0.15384615384615385,
+     "fire_frac_new": 0.5
+    }
+   ],
+   "pass": true
+  },
+  "negative_control": {
+   "original": {
+    "unseparated": [],
+    "minimal": [
+     "insert_improving_edge",
+     "inject_unreached_node"
+    ]
+   },
+   "repaired": {
+    "unseparated": [],
+    "minimal": [
+     "delete_tree_edge_near",
+     "insert_improving_edge",
+     "inject_unreached_node"
+    ]
+   }
+  },
+  "median_repaired": 0.21583850931677018,
+  "records": [
+   {
+    "checkpoint": "gated_800",
+    "label": "bellman_ford",
+    "d_near": 0.29411764705882354,
+    "closed": false
+   },
+   {
+    "checkpoint": "gated_801",
+    "label": "bellman_ford",
+    "d_near": 0.3611111111111111,
+    "closed": false
+   },
+   {
+    "checkpoint": "gated_802",
+    "label": "bellman_ford",
+    "d_near": 0.10344827586206896,
+    "closed": true
+   },
+   {
+    "checkpoint": "halt_900",
+    "label": "bellman_ford",
+    "d_near": 0.26666666666666666,
+    "closed": false
+   },
+   {
+    "checkpoint": "halt_901",
+    "label": "bf_truncated_k3",
+    "d_near": 0.33962264150943394,
+    "closed": false
+   },
+   {
+    "checkpoint": "halt_902",
+    "label": "bellman_ford",
+    "d_near": 0.25806451612903225,
+    "closed": false
+   },
+   {
+    "checkpoint": "plain_700",
+    "label": "bellman_ford",
+    "d_near": 0.3157894736842105,
+    "closed": false
+   },
+   {
+    "checkpoint": "plain_701",
+    "label": "bellman_ford",
+    "d_near": 0.2972972972972973,
+    "closed": false
+   },
+   {
+    "checkpoint": "plain_702",
+    "label": "bellman_ford",
+    "d_near": 0.375,
+    "closed": false
+   }
+  ],
+  "verdict": "UNCHANGED"
+ }
+}

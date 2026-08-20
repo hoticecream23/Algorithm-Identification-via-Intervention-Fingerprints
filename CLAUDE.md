@@ -35,6 +35,9 @@ python run_e6.py
 # G reference-free discrimination: networks vs each other (no CUDA, ~5 min)
 python run_g.py --stage 1
 python run_g.py --stage 2        # trains 12 fresh checkpoints, needs CUDA (~40 min)
+
+# H instrument repair: orthogonality metric + firing rule (numpy/CPU, minutes)
+python run_h.py --part all
 ```
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA. Run all scripts from the repo root. JAX and DeepMind CLRS are not installed and are not needed.
@@ -98,4 +101,4 @@ These are hard-won; four results in this project evaporated by violating them.
 
 ## Current project status (as of 2026-08-20)
 
-Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches, with the three remaining objections closed: E5 shows the vacuity gap is not a sensitivity-normalisation artefact; E6's attempt at a sharper Dijkstra/Prim probe failed its own mechanism check informatively (edge-weight raises are as invisible to relaxation as deletions, for the same monotonicity reason); and **G closed the reference-free question** — the fingerprints do not separate the networks from *each other* either (chance purity on 12 fresh seeds, 0/8 on gated-vs-plain, 11 cross-arm pairs bit-identical), which removes the last defence available to E3's null, that the label rather than the instrument was broken. The recommended next action is writing up. See `HANDOFF.md` for the full status table and `ROUTES_TO_POSITIVE.md` for the ranked menu of what remains open — after G its top item is §2.1 + §2.2. The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.
+Symbolic work: complete and positive. Neural work: finished and negative on all tested approaches, with the three remaining objections closed: E5 shows the vacuity gap is not a sensitivity-normalisation artefact; E6's attempt at a sharper Dijkstra/Prim probe failed its own mechanism check informatively (edge-weight raises are as invisible to relaxation as deletions, for the same monotonicity reason); **H repaired the instrument in both places it was known broken** — the `r = -0.233` orthogonality verdict is UNSUPPORTED (it is -0.004 under separating power, and the published value has p = 0.54), and the firing rule was poking networks at ~11% of their active life rather than 50%; fixing it leaves the vacuity gap UNCHANGED, which strengthens Proposition 5. And **G closed the reference-free question** — the fingerprints do not separate the networks from *each other* either (chance purity on 12 fresh seeds, 0/8 on gated-vs-plain, 11 cross-arm pairs bit-identical), which removes the last defence available to E3's null, that the label rather than the instrument was broken. The recommended next action is writing up. See `HANDOFF.md` for the full status table and `ROUTES_TO_POSITIVE.md` for the ranked menu of what remains open — after G its top item is §2.1 + §2.2. The `FINDINGS_RESIDUAL.md` exploratory follow-up carries its own frozen confirmatory design and is explicitly not yet a result.

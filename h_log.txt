@@ -1,0 +1,101 @@
+pre-registered decision rule: PREREGISTRATION_H.md
+
+==============================================================================
+H1 -- is the orthogonality verdict measured against the right quantity?
+==============================================================================
+
+  interventions in the stored fingerprints: 9 of 11 now defined
+
+  minimal separating set: ['insert_improving_edge', 'inject_unreached_node']
+  reference pairs: 10
+
+  intervention                     neural  sv_rate  sv_pairs  sv_uniq
+  inject_unreached_node             0.944    0.095         4        1  <- minimal set
+  delete_tree_edge_near             0.713    0.228         4        0
+  corrupt_node_down                 0.648    0.197         4        0
+  insert_improving_edge             0.367    0.458         9        2  <- minimal set
+  lower_tree_edge_weight            0.333    0.433         6        0
+  insert_shortcut_from_source       0.278    0.406         7        0
+  delete_tree_edge_far              0.278    0.105         3        0
+  corrupt_node_up                   0.222    0.335         5        0
+  delete_nontree_edge               0.167    0.000         0        0
+
+==============================================================================
+NEGATIVE CONTROL -- does sv_rate reproduce the published r = -0.233?
+  r(neural, sv_rate) = -0.233   target -0.233 +/- 0.005   PASS
+
+==============================================================================
+RESULT -- the same correlation under three symbolic scores
+==============================================================================
+
+  BASELINE (published) -- sv_rate
+    r = -0.233   exact two-sided p = 0.5445   Fisher-z 95% CI [-0.777, +0.510]
+
+  PRIMARY -- sv_pairs
+    r = -0.004   exact two-sided p = 0.9930   Fisher-z 95% CI [-0.666, +0.662]
+
+  SECONDARY -- sv_unique
+    r = +0.240   exact two-sided p = 0.5972   Fisher-z 95% CI [-0.504, +0.780]
+
+==============================================================================
+H1 VERDICT (pre-registered ladder): UNSUPPORTED
+==============================================================================
+  No evidence of any relationship, in either direction, at n = 9.
+  This does NOT show the axes are aligned. It shows that the argument which
+  closed off probe redesign rests on a correlation the data cannot resolve.
+  The question is reopened, not answered.
+
+==============================================================================
+H2 -- does the firing rule fire where it says it does, and does fixing it close
+      Proposition 5's vacuity gap?
+==============================================================================
+
+  MANIPULATION CHECK -- fire round as a fraction of active life
+  (need 7/9 networks inside [0.35, 0.6] after the repair)
+
+    executor                 old  repaired
+    bellman_ford            0.39      0.46
+    bf_truncated_k3         0.33      0.33
+    spfa                    0.48      0.48
+    dijkstra                0.47      0.48
+    prim                    0.45      0.50
+    gated_800               0.11      0.44
+    gated_801               0.11      0.44
+    gated_802               0.17      0.50
+    halt_900                0.31      0.50
+    halt_901                0.25      0.50
+    halt_902                0.38      0.50
+    plain_700               0.12      0.47
+    plain_701               0.09      0.45
+    plain_702               0.15      0.50
+
+    9/9 networks inside the window after repair  PASS
+
+==============================================================================
+NEGATIVE CONTROL -- does the repair disturb the symbolic separation?
+  [original ] unseparated: none   minimal: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+  [repaired ] unseparated: none   minimal: ['delete_tree_edge_near', 'insert_improving_edge', 'inject_unreached_node'] (size 3)
+  => PASS
+
+  reference-to-reference median, repaired: 0.2158
+
+==============================================================================
+PRIMARY -- d_near vs the reference-to-reference median, under the repair
+==============================================================================
+  gated_800      d_near 0.2941  (bellman_ford    )  still-vacuous
+  gated_801      d_near 0.3611  (bellman_ford    )  still-vacuous
+  gated_802      d_near 0.1034  (bellman_ford    )  CLOSED
+  halt_900       d_near 0.2667  (bellman_ford    )  still-vacuous
+  halt_901       d_near 0.3396  (bf_truncated_k3 )  still-vacuous
+  halt_902       d_near 0.2581  (bellman_ford    )  still-vacuous
+  plain_700      d_near 0.3158  (bellman_ford    )  still-vacuous
+  plain_701      d_near 0.2973  (bellman_ford    )  still-vacuous
+  plain_702      d_near 0.3750  (bellman_ford    )  still-vacuous
+
+==============================================================================
+H2 VERDICT (pre-registered ladder): UNCHANGED   (1/9 closed)
+==============================================================================
+  The vacuity gap survives a firing rule that demonstrably fires in the right
+  place. Proposition 5 stands, and stands on firmer ground than before.
+
+wrote h_results.json

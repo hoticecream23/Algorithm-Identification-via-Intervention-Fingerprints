@@ -2,7 +2,7 @@
 
 Cold-start context for resuming this project in a fresh session. Read this first.
 
-**Last updated:** 2026-08-20 — symbolic work complete and positive. **The neural side is
+**Last updated:** 2026-08-21 — symbolic work complete and positive. **The neural side is
 finished twice over and now explained twice.** E3 tested the method on its designed target with
 both gates passing and returned a null, E3b failed to replicate the one lead, and the
 decomposition shows why — the fingerprint measures neural models along axes orthogonal to the
@@ -28,8 +28,17 @@ definitional layer. `ROUTES_TO_POSITIVE.md` is a ranked menu of everything still
 its top item is §2.1 + §2.2 (repair the two pinned predicates, then re-check the orthogonality
 metric that closed the door on probe redesign). `FINDINGS_RESIDUAL.md` carries an exploratory
 answer to "what are the networks doing instead" with its own frozen confirmatory design; it is
-explicitly not a result. No further pre-registered items remain queued; what's left is the
-write-up.
+explicitly not a result. **H then repaired the instrument in both places it was known broken.**
+H1: the `r = -0.233` orthogonality verdict is **UNSUPPORTED** — it is -0.004 under a
+separating-power score, +0.240 under unique-separator weighting, and the published value has an
+exact permutation p of 0.5445 with a 95% interval of [-0.777, +0.510]. That argument closed the
+door on probe redesign and cannot bear the weight, so **§4 of `ROUTES_TO_POSITIVE.md` is live
+again**. H2 found and fixed a real defect affecting *every* neural fingerprint here: the firing
+rule poked networks at ~11% of their active life against ~45% for the references, because
+`settle_round`'s relative threshold is anchored on the round-1 sentinel transient that only a
+continuous-output executor has. Repaired, the vacuity gap is **UNCHANGED** (ratio 1.35 -> 1.34,
+scale-invariant), which makes Proposition 5 substantially harder to dismiss. No further
+pre-registered items remain queued; what's left is the write-up.
 
 Environment: Windows, PowerShell. Python 3.14, numpy 2.4, PyTorch 2.11+cu128 with CUDA
 available, torch_geometric 2.8. JAX and DeepMind CLRS are **not** installed and are not
@@ -52,15 +61,25 @@ predicts OOD generalization better than in-distribution validation accuracy* —
 supported**. Models differing 5-8x in OOD error are fingerprint-identical in-distribution.
 Four additional in-distribution diagnostics also failed to beat validation accuracy.
 
-**Explained (decomposition, 2026-08-11).** The neural null has a specific cause, and it is
-not resolution, seeds or architecture. The fingerprint's discriminative axes and its
-neural-disagreement axes are **orthogonal — r = −0.233**. The four interventions carrying
+**Explained (decomposition, 2026-08-11) — and both halves of this paragraph were later
+overturned by H (2026-08-21); read `FINDINGS_H.md` before citing any of it.** The neural null
+has a specific cause, and it is not resolution, seeds or architecture. The fingerprint's
+discriminative axes and its neural-disagreement axes are **orthogonal — r = −0.233**
+[**H1: UNSUPPORTED.** That correlation is over nine points, with exact permutation p = 0.5445
+and 95% CI [−0.777, +0.510]; under a separating-power score it is −0.004 and under
+unique-separator weighting +0.240. It is neither significant nor robust, and
+`inject_unreached_node` — called "barely separates symbolic algorithms" below — is the *unique*
+separator of dijkstra/spfa]. The four interventions carrying
 the most symbolic identity are the four where neural models disagree least; the two where
 neural models are most distinctive (`inject_unreached_node` 0.944 vs 0.095 symbolic,
 `corrupt_node_down` 0.648 vs 0.197) barely separate symbolic algorithms at all. Two of
 seven predicates, `latency` and `poked_settled`, disagree **100%** of the time — they ask
 exact-fixed-point questions of a system with no exact fixed point, so they are pinned
-constants consuming ~29% of every neural fingerprint. See `FINDINGS_DECOMPOSITION.md`.
+constants consuming ~29% of every neural fingerprint [**H2: wrong mechanism.** `was_converged`
+already receives `tol = 2.5`, so tolerance was never binding. The real cause is the firing rule:
+networks were poked at ~11% of their active life against ~45% for the references, so at round 1
+nothing has settled yet. Repaired, the vacuity gap is UNCHANGED — ratio 1.35 → 1.34]. See
+`FINDINGS_DECOMPOSITION.md` and `FINDINGS_H.md`.
 A predicted deletion/monotonicity offset was **refuted**: deletions are 30.4% of disagreeing
 slots against 33.3% of the suite, and removing them makes every distance worse.
 
@@ -162,6 +181,8 @@ superseded — treat as history).
 | E5 | Sensitivity normalisation vs Proposition 5's vacuity gap | **Done, UNCHANGED** — 7/9 checkpoints stay vacuous under a normalised measure |
 | E6 | Direct Dijkstra/Prim key-dissociation probe | **Done, MANIPULATION FAILED** — weight-raise is monotonically invisible; boundary still rests on one intervention |
 | G | Reference-free discrimination: do fingerprints separate networks from *each other*? | **Done, NULL** — chance purity on 12 fresh seeds; 0/8 on gated-vs-plain; 11 cross-arm pairs bit-identical |
+| H1 | Is the r = -0.233 orthogonality verdict measured against the right quantity? | **Done, UNSUPPORTED** — r = -0.004 under separating power; published value has p = 0.54, CI [-0.78, +0.51]. Probe redesign is no longer excluded by evidence |
+| H2 | Firing rule fires at ~11% of a network's active life, not 50% | **Done, defect FIXED; vacuity UNCHANGED** — repaired 9/9 to 0.44-0.50, `d_near`/median moves 1.35 -> 1.34 |
 | — | Full model zoo (60-100 models) | Not started; **not justified** without a new idea |
 
 **Phase F in one line** (`FINDINGS_FAMILY.md`, `PREREGISTRATION_FAMILY.md`,

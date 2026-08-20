@@ -336,7 +336,30 @@ def settle_round(traj: list[State], tol: float = 1e-9, rel: float = 0.05) -> int
     return last
 
 
-def firing_round(control: list[State], budget: int, tol: float = 1e-9) -> int:
+def settle_round_absolute(traj: list[State], tol: float = 1e-9) -> int:
+    """Last round at which any node's `d` moved by more than `tol`. No relative term.
+
+    The counterpart to `settle_round` for continuous-output executors, and the estimator
+    `fpid.fingerprint._settle_round` has always used to measure active life.
+
+    `settle_round`'s relative threshold is anchored on the largest single-round change the
+    run ever makes. A symbolic algorithm lifts nodes off the `UNREACHED` sentinel in one
+    ~70-unit jump every round and clears that bar for its whole run; a network makes one
+    large round-1 transient and thereafter moves every node by a few units, which its own
+    transient then masks. The two estimators agree for symbolic executors and disagree by
+    3-4x for networks, which silently fired every neural probe at ~11% of the run's active
+    life against ~45% for the references. See `FINDINGS_H.md`.
+    """
+    last = 0
+    for r in range(1, len(traj)):
+        if not d_equal(traj[r - 1].d, traj[r].d, tol).all():
+            last = r
+    return last
+
+
+def firing_round(
+    control: list[State], budget: int, tol: float = 1e-9, absolute: bool = False
+) -> int:
     """Halfway through the algorithm's own active life.
 
     An absolute round number is not a comparable moment across algorithms -- round 5
@@ -344,8 +367,14 @@ def firing_round(control: list[State], budget: int, tol: float = 1e-9) -> int:
     Dijkstra. Relative progress is the only shared clock, and taking the midpoint
     guarantees that half the run remains for the algorithm to respond in. Firing
     after termination measures nothing, which is what an absolute round did.
+
+    `absolute=True` measures active life with `settle_round_absolute`, which is the only
+    variant that delivers the intended midpoint for a continuous-output executor. Off by
+    default so every existing reported number stays reproducible by the command at the top
+    of its findings document.
     """
-    return int(np.clip(settle_round(control, tol) // 2, 1, budget - 1))
+    settled = settle_round_absolute(control, tol) if absolute else settle_round(control, tol)
+    return int(np.clip(settled // 2, 1, budget - 1))
 
 
 def was_converged(
