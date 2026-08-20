@@ -1,0 +1,49 @@
+======================================================================
+NEGATIVE CONTROL -- does normalisation disturb the symbolic separation?
+======================================================================
+  fingerprinted bellman_ford
+  fingerprinted bf_truncated_k3
+  fingerprinted spfa
+  fingerprinted dijkstra
+  fingerprinted prim
+  [raw] unseparated pairs: none
+  [raw] minimal separating set: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+  [normalised] unseparated pairs: none
+  [normalised] minimal separating set: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+
+  PASS -- unseparated empty and |minimal| <= 3 required
+
+probe-graph depths: [5, 6, 5, 5, 5, 5, 5, 6] (median 5.0)
+
+======================================================================
+Building symbolic reference fingerprints
+  reference-to-reference median: raw 0.3028  normalised 0.4891
+
+======================================================================
+PRIMARY -- checkpoint distance to nearest reference, raw vs normalised
+======================================================================
+  gated_800      raw d_near=0.4118 (bellman_ford    )  norm d_near=0.7059 (bellman_ford    )  still-vacuous
+  gated_801      raw d_near=0.4118 (bellman_ford    )  norm d_near=0.7059 (bellman_ford    )  still-vacuous
+  gated_802      raw d_near=0.3667 (bellman_ford    )  norm d_near=0.6000 (bellman_ford    )  still-vacuous
+  halt_900       raw d_near=0.3750 (bellman_ford    )  norm d_near=0.3333 (bf_truncated_k3 )  CLOSED
+  halt_901       raw d_near=0.4390 (bf_truncated_k3 )  norm d_near=0.5000 (bf_truncated_k3 )  still-vacuous
+  halt_902       raw d_near=0.3889 (bf_truncated_k3 )  norm d_near=0.3333 (bf_truncated_k3 )  CLOSED
+  plain_700      raw d_near=0.4375 (bellman_ford    )  norm d_near=0.6923 (bf_truncated_k3 )  still-vacuous
+  plain_701      raw d_near=0.4242 (bellman_ford    )  norm d_near=0.6667 (bf_truncated_k3 )  still-vacuous
+  plain_702      raw d_near=0.4242 (bellman_ford    )  norm d_near=0.6923 (bf_truncated_k3 )  still-vacuous
+
+======================================================================
+SECONDARY -- null-control response rate (references, for comparison)
+  bellman_ford     0.562
+  bf_truncated_k3  0.326
+  dijkstra         0.396
+  prim             0.133
+  spfa             0.429
+
+======================================================================
+VERDICT (pre-registered ladder, PREREGISTRATION_E5E6.md)
+  2/9 checkpoints CLOSED (normalised d_near < normalised reference-to-reference median)
+  UNCHANGED. The vacuity is real and not a sensitivity artefact.
+  Proposition 5 stands, strengthened.
+
+wrote e5_results.json

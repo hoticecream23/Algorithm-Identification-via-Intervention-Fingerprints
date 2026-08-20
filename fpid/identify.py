@@ -18,15 +18,61 @@ from __future__ import annotations
 
 from .fingerprint import Fingerprint
 
+NULL_CONTROL = "delete_nontree_edge"
+
 
 def shared_keys(a: Fingerprint, b: Fingerprint, stability: float) -> list:
     """Predicates stable in both fingerprints, so comparable between them."""
     return sorted(a.stable_keys(stability) & b.stable_keys(stability))
 
 
-def distance(a: Fingerprint, b: Fingerprint, stability: float = 0.8) -> float:
-    """Fraction of jointly-stable predicates on which two fingerprints disagree."""
-    keys = shared_keys(a, b, stability)
+def informative(fp: Fingerprint, key: tuple[str, str]) -> bool:
+    """Whether `fp`'s response at `key` differs from its own response to the null control.
+
+    A response that matches what the same executor does when nothing informative
+    happened (`delete_nontree_edge`, an edge no shortest path uses) is not a response
+    to the poke -- it is the executor's baseline jumpiness. `key` for the null control
+    itself is always informative, since it has nothing to be compared against.
+    """
+    intervention, predicate = key
+    if intervention == NULL_CONTROL:
+        return True
+    baseline = (NULL_CONTROL, predicate)
+    if baseline not in fp.value:
+        return True
+    return fp.value[key] != fp.value[baseline]
+
+
+def keys_normalised(a: Fingerprint, b: Fingerprint, stability: float) -> list:
+    """Jointly-stable keys, with slots uninformative for *both* fingerprints dropped.
+
+    Masking must be pairwise, not per-fingerprint. Under `corrupt_node_up`,
+    Bellman-Ford's own response equals its null-control response (`recovery=exact`
+    either way), so a per-fingerprint mask would drop that slot and destroy the
+    BF/Dijkstra separation Phase A rests on -- Dijkstra is informative there
+    (`recovery=none`), so the pairwise rule keeps it. The null control's own slots
+    are excluded: it is the reference, not a measurement.
+    """
+    return [
+        k
+        for k in shared_keys(a, b, stability)
+        if k[0] != NULL_CONTROL and (informative(a, k) or informative(b, k))
+    ]
+
+
+def distance(
+    a: Fingerprint,
+    b: Fingerprint,
+    stability: float = 0.8,
+    normalise: bool = False,
+) -> float:
+    """Fraction of jointly-stable predicates on which two fingerprints disagree.
+
+    `normalise=True` additionally drops slots uninformative for both fingerprints
+    (see `keys_normalised`). Off by default so every existing reported number stays
+    reproducible by the command at the top of its findings document.
+    """
+    keys = keys_normalised(a, b, stability) if normalise else shared_keys(a, b, stability)
     if not keys:
         return 1.0
     return sum(1 for k in keys if a.value.get(k) != b.value.get(k)) / len(keys)
@@ -36,6 +82,7 @@ def classify(
     fp: Fingerprint,
     refs: dict[str, Fingerprint],
     stability: float = 0.8,
+    normalise: bool = False,
 ) -> tuple[str, dict[str, float]]:
     """Return the nearest reference algorithm and the full distance profile.
 
@@ -43,7 +90,9 @@ def classify(
     everything is not a Bellman-Ford, it is an unidentified algorithm, and the margin
     between first and second place is what tells the two cases apart.
     """
-    dists = {name: distance(fp, ref, stability) for name, ref in refs.items()}
+    dists = {
+        name: distance(fp, ref, stability, normalise) for name, ref in refs.items()
+    }
     return min(dists, key=lambda k: dists[k]), dists
 
 
