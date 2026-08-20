@@ -1,0 +1,241 @@
+n=24  graphs=6  rounds=8  kappa=1.0  targets=40
+pre-registered decision rule: PREREGISTRATION_FAMILY.md
+
+==========================================================================
+GATE 0a -- embedding: does the family contain the five references exactly?
+==========================================================================
+  bellman_ford       max|d_family - d_ref| = 0.000e+00   exact
+  bf_truncated_k3    max|d_family - d_ref| = 0.000e+00   exact
+  spfa               max|d_family - d_ref| = 0.000e+00   exact
+  dijkstra           max|d_family - d_ref| = 0.000e+00   exact
+  prim               max|d_family - d_ref| = 0.000e+00   exact
+
+  20 graphs x 24 rounds, both from the UNREACHED sentinel
+  => PASS
+
+  probe-graph depths: [8, 6, 5, 5, 5, 5]  (median 5.0)
+
+==========================================================================
+GATE 0b -- observable adequacy: does the profile move when each axis moves?
+==========================================================================
+  The manipulation check, pointed inward. Without it, Gate 1 would report a
+  confound wherever the truth is a dead observable -- E1's error.
+
+  alpha      max marginal SNR    41.15 at alpha=0.1    ok
+  tau        max marginal SNR    15.00 at tau=8.0    ok
+  gamma      max marginal SNR   157.25 at gamma=0.0    ok
+  c          max marginal SNR     4.46 at c=0.5    ok
+  k          max marginal SNR    53.24 at k=3      ok
+  selection  max marginal SNR     8.97 at selection=argmin ok
+
+  => PASS
+
+==========================================================================
+GATE 1 -- identifiability: are distinct parameters distinguishable above noise?
+==========================================================================
+
+  Per-axis level resolution: which levels of each axis are distinguishable?
+  Indistinguishable classes are levels no pair of which reaches SNR 3.
+
+    alpha      6/7 distinguishable   {0.1}  {0.2}  {0.35,0.5}  {0.7}  {0.85}  {1.0}
+    tau        3/7 distinguishable   {0.0,0.25,0.5,1.0}  {2.0,4.0}  {8.0}
+    gamma      5/6 distinguishable   {0.0}  {0.25}  {0.5,0.75}  {0.9}  {1.0}
+    c          2/5 distinguishable   {0.0,0.1}  {0.25,0.5,1.0}
+    k          3/6 distinguishable   {3}  {5}  {8,12,24,None}
+    selection  2/2 distinguishable   {sync}  {argmin}
+
+  Confound matrix: min SNR over pairs >= 2 grid steps apart within each
+  2-D slice through the reference point. Distinguishable at SNR >= 3.
+
+                  alpha       tau     gamma         c         k selection
+       alpha          -      0.00      3.38      0.00      0.00      0.42
+         tau       0.00         -      0.00      0.10      0.00      0.00
+       gamma       3.38      0.00         -      0.00      0.00      0.60
+           c       0.00      0.10      0.00         -      0.00      0.29
+           k       0.00      0.00      0.00      0.00         -      0.00
+   selection       0.42      0.00      0.60      0.29      0.00         -
+
+  axis pairs below SNR 3: 14/15   <- the frozen criterion
+    alpha|c                  min SNR 0.00
+    alpha|k                  min SNR 0.00
+    tau|gamma                min SNR 0.00
+    tau|k                    min SNR 0.00
+    tau|selection            min SNR 0.00
+    gamma|c                  min SNR 0.00
+    gamma|k                  min SNR 0.00
+    c|k                      min SNR 0.00
+    k|selection              min SNR 0.00
+    alpha|tau                min SNR 0.00
+    tau|c                    min SNR 0.10
+    c|selection              min SNR 0.29
+    alpha|selection          min SNR 0.42
+    gamma|selection          min SNR 0.60
+
+  Restricted confound matrix: only levels resolvable within their own axis.
+  Reported as a decomposition of the frozen criterion above, not a substitute.
+
+                  alpha       tau     gamma         c         k selection
+       alpha          -      0.06      1.61      0.00      3.39      0.31
+         tau       0.06         -      0.00      0.10      1.42      0.00
+       gamma       1.61      0.00         -      0.00      0.00      0.26
+           c       0.00      0.10      0.00         -      0.08      0.33
+           k       3.39      1.42      0.00      0.08         -      0.17
+   selection       0.31      0.00      0.26      0.33      0.17         -
+
+  restricted pairs below SNR 3: 14/15
+    alpha|c                  min SNR 0.00
+    tau|gamma                min SNR 0.00
+    tau|selection            min SNR 0.00
+    gamma|c                  min SNR 0.00
+    gamma|k                  min SNR 0.00
+    alpha|tau                min SNR 0.06
+    c|k                      min SNR 0.08
+    tau|c                    min SNR 0.10
+    k|selection              min SNR 0.17
+    gamma|selection          min SNR 0.26
+    alpha|selection          min SNR 0.31
+    c|selection              min SNR 0.33
+    tau|k                    min SNR 1.42
+    alpha|gamma              min SNR 1.61
+
+  64-point random design: 2016 distinct pairs, 75.8% at SNR >= 3
+    SNR  0.00   (0.7, 0.25, 1.0, 1.0, None, 'argmin')  vs  (0.7, 2.0, 1.0, 1.0, None, 'argmin')
+    SNR  0.00   (0.35, 0.5, 1.0, 0.0, 12, 'argmin')  vs  (0.35, 1.0, 1.0, 0.1, 8, 'argmin')
+    SNR  0.13   (0.5, 1.0, 0.9, 1.0, 5, 'sync')  vs  (0.5, 2.0, 0.9, 0.1, 5, 'sync')
+    SNR  0.17   (0.2, 4.0, 0.25, 0.25, 12, 'argmin')  vs  (0.2, 2.0, 0.0, 1.0, 8, 'argmin')
+    SNR  0.21   (0.85, 2.0, 0.75, 0.25, 8, 'argmin')  vs  (0.5, 0.5, 0.9, 0.1, 24, 'argmin')
+    SNR  0.23   (0.5, 0.5, 0.9, 0.1, 24, 'argmin')  vs  (0.35, 4.0, 0.75, 0.5, 24, 'argmin')
+    ... and 481 more
+
+  argmin vs fifo SNR: 1.46  (pre-committed prediction: < 3, i.e. SPFA and Dijkstra are not separable here)
+    prediction HELD
+
+  sentinel invariance, UNREACHED 80 vs 160: max |dz| = 2.08e-01
+    softmin is translation-equivariant, so only message *gaps* matter
+
+  tau detectability -- smallest grid tau whose off_pr clears the hard-min value
+  (inf = no tau on the grid is detectable at that operating point)
+
+                 tau@g=0.5     tau@g=1.0
+    a=0.1             1.00           inf
+    a=0.2             1.00           inf
+    a=0.35            1.00          8.00
+    a=0.5             1.00          8.00
+    a=0.7             1.00          8.00
+    a=0.85            1.00          4.00
+    a=1.0             1.00          1.00
+
+  => PARTIAL -- see disqualified axes below
+
+==========================================================================
+GATE 2 -- recovery: are hand-set parameters read back out?
+==========================================================================
+
+  Gate 2: 40 targets
+    -- frozen scoring: all targets, refusals counted as answers (criterion of record)
+    alpha       median err 0.0000  p90 0.2925   FAIL   (<= 0.05 / 0.15)
+    gamma       median err 0.0000  p90 0.0346   PASS   (<= 0.05 / 0.15)
+    -- answered-only, with coverage as the price
+    alpha       median err 0.0000  p90 0.0039   PASS   coverage  70.0%
+    gamma       median err 0.0000  p90 0.0055   PASS   coverage  87.5%
+    k  frozen   exact  45.0%                        FAIL   (>= 90%)
+    k  amended  class  95.0%                        PASS   (>= 90%)  <- Gate 1 horizon
+    selection   exact  97.5%                        PASS   (>= 95%)
+    c  frozen   3-bucket  52.5%                     FAIL   (>= 80%)  reported
+    c  amended  2-class   62.5%                     FAIL   (>= 80%)  reported
+    tau (n=15 in detectable range)  median rel err 1.000   FAIL   (<= 0.40)  reported
+    tau refusal (n=25 below floor)  flagged  92.0%       PASS   (>= 90%)  reported
+    gamma~0 flagged  100.0% of 7              PASS   (>= 90%)
+    chi2        median 0.0026  p90 13.4198
+    self-diagnosis: of 6 targets recovered badly, 83% have chi2 > 4;
+                    of 34 recovered well, 100% have chi2 <= 4
+
+    => core, amended k (alpha, gamma, k-class, selection): FAIL
+       core, frozen  k                                  : FAIL
+       alpha or gamma failed: the reframe is dead, per the pre-registration.
+
+==========================================================================
+GATE 2b -- held-out replication: fresh graphs, fresh draw, nothing refitted
+==========================================================================
+
+  Gate 2b: 40 targets
+    -- frozen scoring: all targets, refusals counted as answers (criterion of record)
+    alpha       median err 0.0000  p90 0.2462   FAIL   (<= 0.05 / 0.15)
+    gamma       median err 0.0000  p90 0.0088   PASS   (<= 0.05 / 0.15)
+    -- answered-only, with coverage as the price
+    alpha       median err 0.0000  p90 0.0000   PASS   coverage  75.0%
+    gamma       median err 0.0000  p90 0.0011   PASS   coverage  87.5%
+    k  frozen   exact  45.0%                        FAIL   (>= 90%)
+    k  amended  class  95.0%                        PASS   (>= 90%)  <- Gate 1 horizon
+    selection   exact 100.0%                        PASS   (>= 95%)
+    c  frozen   3-bucket  42.5%                     FAIL   (>= 80%)  reported
+    c  amended  2-class   65.0%                     FAIL   (>= 80%)  reported
+    tau (n=16 in detectable range)  median rel err 1.000   FAIL   (<= 0.40)  reported
+    tau refusal (n=24 below floor)  flagged  95.8%       PASS   (>= 90%)  reported
+    gamma~0 flagged   71.4% of 7              FAIL   (>= 90%)
+    chi2        median 0.1937  p90 42.5332
+    self-diagnosis: of 5 targets recovered badly, 100% have chi2 > 4;
+                    of 35 recovered well, 83% have chi2 <= 4
+
+    => core, amended k (alpha, gamma, k-class, selection): FAIL
+       core, frozen  k                                  : FAIL
+       alpha or gamma failed: the reframe is dead, per the pre-registration.
+
+  => FAILED
+
+==========================================================================
+GATE 3 -- losability: does an out-of-family generator fit badly?
+==========================================================================
+  Four free parameters can fit anything. If everything fits, this is a tautology.
+
+  in-family holdout (0.7, 0.0, 0.9, 0.0, None, 'sync')
+    chi2    0.0000   ve   1.000   rowdev 0.0000
+  mean_agg (PRIMARY, must fail)
+    chi2   15.0452   ve   0.976   rowdev 0.0000   -> family_wrong
+    worst statistics: off_rows=42.7, n_fit=42.7, diag_frac=31.8
+  second_best (reported)
+    chi2 3999.6336   ve  -5.499   rowdev nan   -> VACUOUS (no fittable rows)
+    A low chi2 here means the generator never moved the state, so an empty
+    profile was matched against an empty profile. Not evidence of fit.
+    worst statistics: off_pr=9600.0, off_width=9600.0, row_sum_med=8134.8
+  max_agg (reported)
+    chi2 3999.6336   ve  -5.499   rowdev nan   -> VACUOUS (no fittable rows)
+    A low chi2 here means the generator never moved the state, so an empty
+    profile was matched against an empty profile. Not evidence of fit.
+    worst statistics: off_pr=9600.0, off_width=9600.0, row_sum_med=8134.8
+
+  => FAIL  (holdout chi2 0.00 <= 4 and mean_agg chi2 15.05 >= 25, non-vacuous)
+     Direction is right -- mean_agg is rejected as family_wrong and
+     sits 2e+10x the holdout residual -- but the frozen
+     5-sigma separation is not met. Resolution, not sign.
+
+  Descriptive fits of 9 trained checkpoints -- NOT GATED.
+  Three architectures x three seeds is not a sample, and any lead here needs
+  its own pre-registration and a held-out seed split before it is a result.
+
+    model            alpha   gamma    tau     c     k     sel      chi2   rowdev
+    gated_800        0.441   0.149   0.55  0.00  None    sync    34.507   0.0119
+    gated_801        0.427   0.123   2.16  0.10  None    sync     6.209   0.0250
+    gated_802        0.348   0.171   0.95  0.00  None    sync     9.617   0.0243
+    halt_900         0.761   0.807   1.26  0.00  None    sync 46155.147   0.1676
+    halt_901         0.831   0.956   4.40  0.00  None    sync 40426.982   0.0676
+    halt_902         0.796   0.785   0.96  0.00  None    sync 15069.595   0.0753
+    plain_700        0.316   0.864   6.06  0.10  None    sync 21132.637   0.1269
+    plain_701        0.516   0.132   0.86  0.00  None    sync 14176.841   0.1326
+    plain_702        0.332   0.592   1.81  0.00  None    sync 44215.765   0.0140
+
+==========================================================================
+VERDICT (pre-registered ladder, PREREGISTRATION_FAMILY.md)
+==========================================================================
+  DEAD on the frozen criterion. alpha or gamma failed with every target
+  scored, including the ones the estimator declined to answer.
+
+  Scored on answered targets only, both pass:
+    alpha p90 0.0039 at 70% coverage
+    gamma p90 0.0055 at 88% coverage
+  So the failure is coverage, not accuracy: the estimator is exact where
+  the mask admits rows and blind where it does not. That is a real limit
+  and it is not the limit that was registered, so the frozen verdict
+  stands. See FINDINGS_FAMILY.md for what a redesign would have to fix.
+
+wrote family_spike_results.json
