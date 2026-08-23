@@ -254,3 +254,51 @@ Sample sizes: 120 instances for fingerprints (matching `run_p2_witness.py --fp-g
   Dijkstra do (all are in-place, comparison-based, `O(n^2)`). If they separate, that is a
   *harder* case than SSSP on the axis of family similarity and an *easier* one on the axis of
   algorithmic diversity. Neither direction should be over-read.
+
+---
+
+## 11. Amendment, 2026-08-23 — G4's premise was false
+
+Recorded **before** any sorting executor was written and before any instance was drawn. No
+experimental data has been seen at the time of this amendment.
+
+**The error.** §6 G4 asserted that `binary_insertion_sort` and `insertion_sort` "have identical
+round-by-round `(d, pi)` trajectories by construction". That is true only while the sorted
+prefix really is sorted. Linear insertion scans left and stops at the first element that does
+not exceed the key; binary insertion indexes into the prefix assuming it is ordered. Several
+probes in §4 (`swap_adjacent_early`, `reverse_block_early`, `corrupt_*_early`) deliberately
+scramble that prefix, at which point the two disagree.
+
+Measured, 20 000 random insertion rounds:
+
+| prefix | rounds where the two differ |
+|---|---|
+| sorted | **0 / 20000** |
+| scrambled | **1654 / 20000** |
+
+So G4 as written would have failed for a correct reason and voided a valid run.
+
+**Replacement gate.** G4 becomes a *clone control*: `insertion_sort` versus
+`insertion_sort_clone`, a second class computing the identical state update by a different code
+path (an explicit slice rotation rather than a shift loop). Being the same function of the
+state, it is identical under every intervention, not merely on sorted prefixes. It tests what
+the original gate was meant to test — that the harness does not manufacture differences between
+two runs of the same procedure — and it tests it unconditionally. **The clone must come back
+unseparated. If it does not, the run is void.**
+
+**The bug is promoted to a secondary observation.** `binary_insertion_sort` is now a declared
+secondary, reported regardless of the primary outcome and outside the primary ladder:
+
+> Linear and binary insertion sort agree in output on every input, and agree in their entire
+> round-by-round state trajectory on every unpoked input. They are equivalent under the empty
+> intervention class. **Prediction (recorded now): the intervention class separates them.**
+
+If that prediction holds it is the sharpest witness in the project. The two algorithms are
+indistinguishable not merely in output but in their whole observable trajectory on the input
+distribution — `≡_{∅,D}` holds in the strongest available sense — and the fingerprint still
+tells them apart. That is `≡_{I,D}` doing exactly what the framework claims it does, on a pair
+where every weaker notion of behavioural equivalence says "same".
+
+The prediction is falsifiable and may fail: the divergence requires a probe to scramble the
+prefix *before* the insertion point of a later round, which not every instance will satisfy.
+A negative here is reported as a negative.
