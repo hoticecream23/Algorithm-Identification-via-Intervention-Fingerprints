@@ -29,7 +29,10 @@ distribution-relative as well as intervention-relative. We give a case where beh
 accuracy provably come apart: a Bellman-Ford truncated at `k` rounds is output-identical to
 full Bellman-Ford on *every* instance of propagation depth at most `k` — by construction, not
 approximately — is separated from it by intervention response anyway, and is correct on none
-of the instances past that bound. Applying the same instrument to trained
+of the instances past that bound. Re-instantiating the framework on comparison sorting shows
+what is portable: the separation machinery transfers unchanged, but the instance distribution
+must be recalibrated — depth buys resolving power in one domain and costs it in the other.
+Applying the same instrument to trained
 message-passing networks yields a **negative result we characterise precisely**: the networks
 are further from every reference algorithm than the references are from each other, and are not
 separable from one another either.
@@ -94,9 +97,15 @@ given family stops collapsing.
    algorithm than two references are from each other, and networks are not separable from one
    another either. We report the boundary of the method's applicability rather than a
    qualified success.
-5. **A reproducibility artefact.** All experiments are pre-registered with frozen decision
-   rules; the repository records five leads that failed replication, alongside the results that
-   survived (§7.3).
+5. **A second instantiation, which locates what is portable** (§5.6). On comparison sorting —
+   where four algorithms are output-identical on *every* input, with no distributional
+   qualifier — the predicates, stability rule and separation machinery transfer unchanged, and
+   we verify this mechanically rather than by assertion. The pre-registered ladder nonetheless
+   fails on one pair of ten, because the probe distribution was imported from the first domain
+   and the depth heuristic inverts. The method is domain-general; its calibration is not.
+6. **A reproducibility artefact.** All experiments are pre-registered with frozen decision
+   rules; the repository records five leads that failed replication and two pre-registered
+   predictions that were falsified, alongside the results that survived (§7.3).
 
 ---
 
@@ -373,6 +382,41 @@ structural: a fingerprint is a **differential** measurement, so any error common
 and intervened rollouts cancels. This is also precisely why identification is near-orthogonal to
 accuracy *by construction* — and why a fingerprint must never be reported as a quality metric.
 
+### 5.6 A second domain: the machinery transfers, the calibration does not
+
+Everything above is shortest paths, so we instantiated the framework a second time on
+comparison sorting: new executors, new targets, a new ten-probe intervention class, a new depth
+measure. Only three things are domain-coupled — the targets, the metric the `depth` predicate
+reports in, and the at-risk rule — and they are isolated behind a seam. Predicate extraction,
+stability gating, Hamming separation and `|S_min|` are the same source. That the refactor is
+inert is checked mechanically rather than asserted: two shortest-path runners produce
+**byte-identical output** before and after it.
+
+**The witness is unconditional here.** Insertion, selection, bubble and cocktail sort agree in
+output on **400/400** instances — and by definition on every input, with no distributional
+qualifier of the kind §5.2 requires. Four algorithms that are provably one function in output
+space; the fingerprint separates five of their six pairs. The truncation witness reproduces too,
+and again exactly: bubble sort halted after `k` passes is correct **iff** the maximum *leftward*
+displacement is at most `k` (139/139 agreement below the threshold, 0/261 above).
+
+**And the pre-registered ladder fails.** One pair of ten — bubble versus cocktail sort — is
+unseparated, at both sample sizes and on both instance distributions. Nine of ten pairs
+separate; the ladder has no middle rung, so this is a failure and we report it as one.
+
+The diagnosis is the useful part. That pair separates readily at moderate disorder (three
+probes distinguish them, and all ten pairs resolve) and stops separating as disorder grows: at
+the pre-registered distribution their fingerprints differ on 17 of 70 slots and **every one of
+the 17 falls below the stability threshold**. Resolving power *decreases* with depth in this
+domain — the exact inverse of §5.3, where deeper instances give relaxation more rounds in which
+to reveal itself. We chose the probe distribution by importing the shortest-path heuristic that
+deeper is better, and that heuristic is domain-specific.
+
+So the framework transfers and its calibration does not. We regard this as the more useful
+outcome: a second domain that simply worked would have shown less than one that identifies
+*which* part of the method is portable. `|S_min|`, the predicates and the separation machinery
+are; the choice of `D` is not, and must be swept in a new domain rather than inherited from an
+old one.
+
 ---
 
 ## 6. Application to learned executors: a characterised negative
@@ -487,9 +531,14 @@ compared. Each is measurable, and the third is the one most often left implicit.
 
 ### 7.2 Limitations
 
-- **Single domain.** Everything here is single-source shortest paths. Whether `|S_min|` behaves
-  similarly for sorting, matching, or dynamic programming is open. `[TODO: §5.3 of
-  `SCOPE_ENLARGED_FAMILY.md` scopes an enlarged family; a second domain is the stronger move.]`
+- **Two domains, and the second one qualifies the first.** §5.6 instantiates the framework on
+  comparison sorting. The machinery transfers — mechanically, not by assertion — but the
+  pre-registered ladder fails on one pair of ten because the probe distribution was chosen by
+  analogy to shortest paths, where the depth heuristic runs the opposite way. Whether `|S_min|`
+  behaves similarly for matching or dynamic programming remains open, and the sorting result
+  suggests each new domain needs its own distributional sweep before any claim is made.
+- **The sorting instantiation is symbolic only.** No sorting network was trained, so §6's
+  vacuity result has been tested in one domain, not two.
 - **Small family.** Five algorithms, ten pairs. Whether `|S_min|` stays constant as `|A|` grows
   is unresolved, and two data points cannot distinguish a constant from a logarithm.
 - **The Dijkstra/Prim edge** rests on one probe (§5.4).
@@ -529,7 +578,17 @@ not.
 does not* is the characteristic signature of a dead lead: it is what two of our retracted
 results looked like at the moment they seemed most promising, one of them with a sound
 invariant-based argument behind it. Ladders with a middle rung invite that state to be written
-up as partial success.
+up as partial success. The rule paid for itself again in §5.6, where the one unseparated pair
+differs on 17 of 70 predicate slots and every one of the 17 is below threshold — the same state,
+and with nine of ten pairs separating it would have been easy to call a partial transfer.
+
+**A probe distribution chosen by analogy to another domain is an untested assumption, not an
+inherited one.** §5.6's ladder fails because we set the sorting instance distribution deep, on
+the shortest-path reasoning that depth buys resolving power. In sorting it costs resolving
+power: high-disorder instances make every algorithm work everywhere, responses stop being
+localised, and no predicate slot survives the stability gate. The instrument transferred and
+its calibration did not, and nothing in the first domain could have told us which. Sweep `D` in
+a new domain; do not import it.
 
 Five candidate results in this project failed replication and are recorded alongside those that
 survived. The recurring cause was selecting the best of several candidate statistics and
@@ -540,10 +599,14 @@ before it died. This may be the most transferable content in the paper.]`
 
 ### 7.4 Future work
 
-`[TODO: keep short. Candidates: second domain; enlarged reference family with a
-predicted-inseparable positive control; second-order/compositional response, which escapes the
-one-round-Jacobian confounds we measured; a family with a state-dependent path gain, which the
-residual structure of §6.3 suggests is the missing ingredient.]`
+`[TODO: keep short. Candidates: recalibrating the sorting distribution — §5.6 identifies [4,8]
+as the band where all ten pairs separate, but that number was chosen after seeing the data and
+needs its own frozen design; a third domain, now that we know each needs a distributional
+sweep; enlarged reference family with a predicted-inseparable positive control;
+second-order/compositional response, which escapes the one-round-Jacobian confounds we
+measured; a family with a state-dependent path gain, which the residual structure of §6.3
+suggests is the missing ingredient; training a sorting executor, which would test whether §6's
+vacuity is a fact about MPNNs on graphs or about learned executors generally.]`
 
 ---
 
@@ -565,6 +628,10 @@ Every quantitative claim maps to a findings document and its reproducing command
 | 6.3 | bit-identical embedding; `χ² ~ 10⁴`; controls | `FINDINGS_FAMILY.md` |
 | 6.4 | normalisation; firing repair; 1.35 → 1.34 | `FINDINGS_E5.md`, `FINDINGS_H.md` |
 | 6.4 | depth arm: 1.38 → 1.85 and 1.33 → 1.68; 0/9 and 2/12; control reproduces 1.34 | `FINDINGS_DEPTH.md` |
+| 5.6 | 400/400 unconditional witness; 139/139 vs 0/261 truncation step | `FINDINGS_SORT.md` §4 |
+| 5.6 | 9/10 pairs separate; bubble/cocktail 17/70 slots all sub-threshold | `FINDINGS_SORT.md` §5–6 |
+| 5.6 | resolving power falls with depth; [4,5] band separates all ten | `FINDINGS_SORT.md` §7 |
+| 5.6 | byte-identical SSSP runner output across the `Domain` seam | `FINDINGS_SORT.md` §3 (G5) |
 | 7.2 | `r = −0.233` retraction; `p = 0.5445` | `FINDINGS_H.md` (H1) |
 
 **Withdrawn numbers.** An earlier version of §5.2 reported that truncated-BF is
@@ -576,6 +643,15 @@ also ~30 points less accurate and the "no accuracy metric separates them" claim 
 `0 of 12` does not reproduce at all (3/12 on the same draw, ~12% at `n = 200`). Keyed on
 `depth_w` the claim becomes exact and is reported that way in §5.2.
 
+**Pre-registered predictions that failed.** Two, both from the sorting instantiation, both
+recorded before the run and both reported as negatives. (i) `|S_min|` was predicted to be
+non-increasing in instance depth, by analogy with §5.3; it is non-monotone at both sample sizes
+and degrades at the deep end. (ii) Linear and binary insertion sort agree in output on every
+input *and* in their entire round-by-round state on every unpoked input — equivalent under the
+empty intervention class in the strongest available sense — and the intervention class was
+predicted to separate them. It does not. A 25-instance check appeared to; at 120 it does not,
+which is the best-of-N failure mode §7.3 describes, caught by our own sample-size rule.
+
 **Numbers deliberately not used.** §6.1 quotes the H2-repaired distances (0.290 / 0.216) rather
 than the originals (0.409 / 0.303); the ratio is 1.34 either way, and the repaired measurement
 is the defensible one. `FINDINGS_E5.md` records a normalised-plus-repaired variant reading
@@ -586,7 +662,8 @@ the reference-to-reference denominator — and it is not used anywhere in this p
 
 ## Draft status
 
-**Written:** skeleton complete, §3–§6 substantially drafted from existing results.
+**Written:** skeleton complete, §3–§6 substantially drafted from existing results; §5.6 added
+from `FINDINGS_SORT.md`.
 **Owed:** all citations (§2 especially); Figure 1; appendix tables for the probe suite and full
 separation matrix; abstract tightening; §7.4.
 **Open decision:** whether §7.2's retraction stays in the paper (recommend yes) and how much of

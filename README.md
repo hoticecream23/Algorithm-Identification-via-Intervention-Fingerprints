@@ -74,7 +74,28 @@ none of them. Fingerprints also recover the trained algorithm from real
 networks: six MPNNs differing only by seed all identify as Bellman-Ford, and the *worst*
 model of the six identifies with the largest margin.
 
+**The machinery is domain-general; its calibration is not.** The framework has been
+instantiated a second time, on comparison sorting (`FINDINGS_SORT.md`, `python run_sorting.py`).
+`fingerprint.probe` takes a `Domain` — targets, the metric the `depth` predicate reports in,
+and the at-risk rule — and everything else is shared source. That the seam is inert is checked,
+not asserted: `run_phase_a.py` and `run_p2_witness.py` produce byte-identical output across it.
+
+Both witnesses reproduce, more strongly than in shortest paths. Insertion, selection, bubble
+and cocktail sort agree in output on 400/400 instances — and on *every* input by definition,
+with none of the distributional qualification §5.2 needs. Bubble sort halted after `k` passes
+is correct **iff** the maximum *leftward* displacement is at most `k` (139/139 below the
+threshold, 0/261 above), the same exact step in a new domain.
+
 ## What does not
+
+**The second domain's pre-registered ladder fails.** Nine of ten sorting pairs separate;
+`bubble_sort` / `cocktail_sort` does not, at both sample sizes and on both instance
+distributions. It is a resolution failure rather than a genuine equivalence — the two differ on
+17 of 70 predicate slots with every one of the 17 below the stability threshold — and the cause
+is a calibration imported from the first domain. The probe distribution was set deep because
+depth buys resolving power for relaxation; in sorting it *costs* resolving power, and the pair
+separates cleanly at moderate disorder. Sweep the input distribution in a new domain; do not
+inherit it.
 
 **The headline claim is refuted.** Fingerprint similarity does **not** predict OOD
 generalization better than validation accuracy when both are measured in-distribution.

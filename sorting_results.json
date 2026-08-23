@@ -1,0 +1,508 @@
+{
+  "final": "DOES NOT TRANSFER",
+  "n16": {
+    "n": 16,
+    "seed": 23,
+    "verdict": "DOES NOT TRANSFER",
+    "gates_pass": true,
+    "gates": {
+      "G1": {
+        "leftward_mean": 10.433333333333334,
+        "leftward_min": 6,
+        "naive_mean": 11.733333333333333,
+        "naive_strictly_greater": 60
+      },
+      "G2": {
+        "insertion_sort": {
+          "fraction": 0.46967948717948727,
+          "life": 14.875,
+          "exempt": false
+        },
+        "selection_sort": {
+          "fraction": 0.4791835016835017,
+          "life": 13.525,
+          "exempt": false
+        },
+        "bubble_sort": {
+          "fraction": 0.4772860472860473,
+          "life": 10.433333333333334,
+          "exempt": false
+        },
+        "cocktail_sort": {
+          "fraction": 0.4721284271284272,
+          "life": 8.183333333333334,
+          "exempt": false
+        },
+        "bubble_truncated_k3": {
+          "fraction": 0.33333333333333326,
+          "life": 3.0,
+          "exempt": true
+        },
+        "insertion_clone": {
+          "fraction": 0.46967948717948727,
+          "life": 14.875,
+          "exempt": false
+        },
+        "binary_insertion_sort": {
+          "fraction": 0.46967948717948727,
+          "life": 14.875,
+          "exempt": false
+        }
+      },
+      "G3": {
+        "unconditional_agree": 400,
+        "unconditional_n": 400,
+        "trunc_shallow_agree": 139,
+        "trunc_shallow_n": 139,
+        "trunc_deep_agree": 0,
+        "trunc_deep_n": 261
+      },
+      "G4": {
+        "unseparated": true
+      },
+      "G_null": {
+        "insertion_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "selection_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "bubble_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "cocktail_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "bubble_truncated_k3": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {
+            "recovery": "partial",
+            "latency": "never"
+          }
+        },
+        "insertion_clone": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "binary_insertion_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        }
+      }
+    },
+    "primary": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort",
+        "bubble_truncated_k3"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "output_identical": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "sensitivity_mixed": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort",
+        "bubble_truncated_k3"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "binary_vs_linear": {
+      "separated": false,
+      "separating": {}
+    },
+    "depth_sweep": [
+      {
+        "lo": 0,
+        "hi": 1,
+        "n_instances": 120,
+        "mean_depth": 0.8083333333333333,
+        "s_min_size": 2,
+        "s_min": [
+          "corrupt_up_early",
+          "corrupt_down_late"
+        ],
+        "unseparated": []
+      },
+      {
+        "lo": 2,
+        "hi": 3,
+        "n_instances": 120,
+        "mean_depth": 2.425,
+        "s_min_size": 2,
+        "s_min": [
+          "corrupt_down_early",
+          "corrupt_down_late"
+        ],
+        "unseparated": []
+      },
+      {
+        "lo": 4,
+        "hi": 5,
+        "n_instances": 120,
+        "mean_depth": 4.383333333333334,
+        "s_min_size": 1,
+        "s_min": [
+          "corrupt_down_late"
+        ],
+        "unseparated": []
+      },
+      {
+        "lo": 6,
+        "hi": 8,
+        "n_instances": 120,
+        "mean_depth": 7.15,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ]
+        ]
+      },
+      {
+        "lo": 9,
+        "hi": 12,
+        "n_instances": 120,
+        "mean_depth": 10.591666666666667,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ]
+        ]
+      },
+      {
+        "lo": 13,
+        "hi": 15,
+        "n_instances": 120,
+        "mean_depth": 13.466666666666667,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ]
+        ]
+      }
+    ]
+  },
+  "n24": {
+    "n": 24,
+    "seed": 23,
+    "verdict": "DOES NOT TRANSFER",
+    "gates_pass": true,
+    "gates": {
+      "G1": {
+        "leftward_mean": 17.483333333333334,
+        "leftward_min": 10,
+        "naive_mean": 19.016666666666666,
+        "naive_strictly_greater": 53
+      },
+      "G2": {
+        "insertion_sort": {
+          "fraction": 0.4798740510697034,
+          "life": 22.908333333333335,
+          "exempt": false
+        },
+        "selection_sort": {
+          "fraction": 0.4883582036933767,
+          "life": 21.3,
+          "exempt": false
+        },
+        "bubble_sort": {
+          "fraction": 0.4866834472716826,
+          "life": 17.483333333333334,
+          "exempt": false
+        },
+        "cocktail_sort": {
+          "fraction": 0.47723205443793676,
+          "life": 12.391666666666667,
+          "exempt": false
+        },
+        "bubble_truncated_k3": {
+          "fraction": 0.33333333333333326,
+          "life": 3.0,
+          "exempt": true
+        },
+        "insertion_clone": {
+          "fraction": 0.4798740510697034,
+          "life": 22.908333333333335,
+          "exempt": false
+        },
+        "binary_insertion_sort": {
+          "fraction": 0.4798740510697034,
+          "life": 22.908333333333335,
+          "exempt": false
+        }
+      },
+      "G3": {
+        "unconditional_agree": 400,
+        "unconditional_n": 400,
+        "trunc_shallow_agree": 132,
+        "trunc_shallow_n": 132,
+        "trunc_deep_agree": 0,
+        "trunc_deep_n": 268
+      },
+      "G4": {
+        "unseparated": true
+      },
+      "G_null": {
+        "insertion_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {
+            "latency": "4+"
+          }
+        },
+        "selection_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "bubble_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "cocktail_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {}
+        },
+        "bubble_truncated_k3": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {
+            "recovery": "none",
+            "latency": "never"
+          }
+        },
+        "insertion_clone": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {
+            "latency": "4+"
+          }
+        },
+        "binary_insertion_sort": {
+          "trajectory_identical": 120,
+          "n": 120,
+          "predicate_deviations": {
+            "latency": "4+"
+          }
+        }
+      }
+    },
+    "primary": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort",
+        "bubble_truncated_k3"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "output_identical": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "sensitivity_mixed": {
+      "names": [
+        "insertion_sort",
+        "selection_sort",
+        "bubble_sort",
+        "cocktail_sort",
+        "bubble_truncated_k3"
+      ],
+      "unseparated": [
+        [
+          "bubble_sort",
+          "cocktail_sort"
+        ]
+      ],
+      "s_min": null,
+      "s_min_size": null
+    },
+    "binary_vs_linear": {
+      "separated": false,
+      "separating": {}
+    },
+    "depth_sweep": [
+      {
+        "lo": 0,
+        "hi": 1,
+        "n_instances": 120,
+        "mean_depth": 0.7666666666666667,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "bubble_truncated_k3"
+          ],
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ],
+          [
+            "bubble_sort",
+            "insertion_sort"
+          ],
+          [
+            "bubble_sort",
+            "selection_sort"
+          ],
+          [
+            "bubble_truncated_k3",
+            "cocktail_sort"
+          ],
+          [
+            "bubble_truncated_k3",
+            "selection_sort"
+          ],
+          [
+            "cocktail_sort",
+            "insertion_sort"
+          ],
+          [
+            "cocktail_sort",
+            "selection_sort"
+          ]
+        ]
+      },
+      {
+        "lo": 2,
+        "hi": 3,
+        "n_instances": 120,
+        "mean_depth": 2.4833333333333334,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ]
+        ]
+      },
+      {
+        "lo": 4,
+        "hi": 5,
+        "n_instances": 120,
+        "mean_depth": 4.325,
+        "s_min_size": 2,
+        "s_min": [
+          "corrupt_down_late",
+          "move_min_to_end"
+        ],
+        "unseparated": []
+      },
+      {
+        "lo": 6,
+        "hi": 8,
+        "n_instances": 120,
+        "mean_depth": 6.291666666666667,
+        "s_min_size": 2,
+        "s_min": [
+          "corrupt_down_late",
+          "move_min_to_end"
+        ],
+        "unseparated": []
+      },
+      {
+        "lo": 9,
+        "hi": 12,
+        "n_instances": 120,
+        "mean_depth": 11.316666666666666,
+        "s_min_size": null,
+        "s_min": null,
+        "unseparated": [
+          [
+            "bubble_sort",
+            "cocktail_sort"
+          ]
+        ]
+      },
+      {
+        "lo": 13,
+        "hi": 23,
+        "n_instances": 120,
+        "mean_depth": 17.416666666666668,
+        "s_min_size": 2,
+        "s_min": [
+          "swap_adjacent_late",
+          "corrupt_down_early"
+        ],
+        "unseparated": []
+      }
+    ]
+  }
+}

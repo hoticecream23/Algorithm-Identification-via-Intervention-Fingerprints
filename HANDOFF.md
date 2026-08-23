@@ -67,6 +67,17 @@ experiment probed at weighted depth ~6, one step above the regime where nothing 
 re-measured at weighted depth ~10 the gap **widens** (1.38 → 1.85 on the nine, 1.33 → 1.68 on
 the twelve), with the control arm reproducing H2's published 1.34. See `FINDINGS_DEPTH.md`.
 
+**Established (second domain, with a qualification).** The framework has now been instantiated
+twice. On comparison sorting the machinery transfers *mechanically* — `fingerprint.probe` was
+given a `Domain` seam and both `run_phase_a.py` and `run_p2_witness.py` produce **byte-identical
+output** across the refactor — and the witnesses are the strongest in the project: four sorts
+agree in output on 400/400 instances (and on every input by definition, with no distributional
+qualifier), and bubble sort truncated at `k` passes is correct **iff** `leftward_depth <= k`
+(139/139 below, 0/261 above). But the pre-registered ladder **fails**: 9 of 10 pairs separate,
+and `bubble_sort`/`cocktail_sort` does not. The cause is a calibration import — the probe
+distribution was set deep on SSSP reasoning, and in sorting resolving power *falls* with
+disorder. The pair separates cleanly in the [4,8] band. See `FINDINGS_SORT.md`.
+
 **Refuted (neural).** The headline claim the project was built on — *fingerprint similarity
 predicts OOD generalization better than in-distribution validation accuracy* — is **not
 supported**. Models differing 5-8x in OOD error are fingerprint-identical in-distribution.
@@ -196,6 +207,8 @@ superseded — treat as history).
 | G | Reference-free discrimination: do fingerprints separate networks from *each other*? | **Done, NULL** — chance purity on 12 fresh seeds; 0/8 on gated-vs-plain; 11 cross-arm pairs bit-identical |
 | H1 | Is the r = -0.233 orthogonality verdict measured against the right quantity? | **Done, UNSUPPORTED** — r = -0.004 under separating power; published value has p = 0.54, CI [-0.78, +0.51]. Probe redesign is no longer excluded by evidence |
 | H2 | Firing rule fires at ~11% of a network's active life, not 50% | **Done, defect FIXED; vacuity UNCHANGED** — repaired 9/9 to 0.44-0.50, `d_near`/median moves 1.35 -> 1.34 |
+| D | Is the vacuity gap a resolution artefact? | **Done, UNCHANGED** — at weighted depth ~10 the gap *widens* (1.38 -> 1.85, 1.33 -> 1.68); control arm reproduces H2's 1.34 |
+| S | Second domain: does the framework transfer to sorting? | **Done, DOES NOT TRANSFER** — machinery transfers (`Domain` seam proven inert, SSSP runners byte-identical) and 9/10 pairs separate, but the pre-registered ladder fails on bubble/cocktail because the probe distribution was imported from SSSP and the depth heuristic inverts |
 | — | Full model zoo (60-100 models) | Not started; **not justified** without a new idea |
 
 **Phase F in one line** (`FINDINGS_FAMILY.md`, `PREREGISTRATION_FAMILY.md`,
@@ -224,6 +237,12 @@ Symbolic separation gate. Seconds, numpy only.
 python run_identifiability.py --graphs 12 --nodes 24
 ```
 Which algorithm pairs separate at which graph depth. Minutes.
+
+```bash
+python run_sorting.py
+```
+The second domain. Gates, both witnesses, the separation ladder, and the depth sweep on the
+sorting axis. numpy only, ~15 min. `--smoke` runs the non-reporting seed.
 
 ```bash
 python run_family_spike.py --gate 0                    # the cheapest falsification, seconds

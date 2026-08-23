@@ -373,6 +373,30 @@ Everything here works, because the symbolic method works. The only question is s
 
 **7.1 — Other problem domains. ★ turns a one-domain method into a framework**
 
+> **PARTLY EXECUTED, 2026-08-23 — Experiment S did sorting.** `FINDINGS_SORT.md`,
+> `PREREGISTRATION_SORT.md`, `python run_sorting.py`. Read before attempting any other domain
+> on this list, because the headline lesson is about the *method*, not about sorting.
+>
+> The machinery transfers and this is proven mechanically: `fingerprint.probe` now takes a
+> `Domain` (targets, site-distance metric, at-risk rule) and both `run_phase_a.py` and
+> `run_p2_witness.py` are **byte-identical** across the refactor. Nine of ten sorting pairs
+> separate. The witnesses are the best in the project — 400/400 unconditional output identity,
+> and truncated bubble sort correct **iff** `leftward_depth <= k` (139/139 vs 0/261).
+>
+> **But the pre-registered ladder FAILED.** `bubble_sort`/`cocktail_sort` is unseparated at the
+> pre-registered distribution, differing on 17 of 70 slots with all 17 below the stability
+> threshold — this project's own dead-lead signature. The cause: the probe distribution was set
+> deep because depth buys resolving power in SSSP. **In sorting it costs resolving power.** The
+> pair separates cleanly in the [4,8] band.
+>
+> **Two cautions for anyone doing MST, max-flow, BFS/DFS or union-find next.**
+> (i) *Sweep `D`; do not import it.* Budget a depth/difficulty sweep as part of the experiment
+> rather than picking a band by analogy.
+> (ii) *Targets must name what the algorithm cannot permute.* A node keeps its identity under
+> relaxation, so a position is a stable handle in SSSP; a sort permutes positions, and a probe
+> aimed at a position silently becomes a different probe by firing time. This broke S's null
+> control and was caught only by a manipulation check.
+
 MST (Prim / Kruskal / Borůvka — genuinely different control flow), sorting (insertion / bubble /
 selection, with array state as the observable), graph search (BFS / DFS / iterative deepening),
 max-flow (Ford–Fulkerson / Edmonds–Karp / Dinic), union-find with and without path compression,
@@ -449,8 +473,18 @@ If only three things get done:
    measurements exist, the acceptance threshold is already frozen, and success would be an actual
    positive identification of a neural reasoner.
 
-Then, by cost-effectiveness: §8.2 (algebra only), §7.1–7.2 (guaranteed, grows the paper),
+Then, by cost-effectiveness: §8.2 (algebra only), §7.2 and the remaining §7.1 domains,
 §4.2 and §4.1 (new observables), §6.1 (the one experiment blocked purely on capacity).
+
+**Note on §7.1 after Experiment S.** It is no longer "guaranteed". Sorting returned DOES NOT
+TRANSFER on its pre-registered ladder, and the reason — an imported probe distribution — will
+apply to every further domain unless the sweep is budgeted in from the start. The upside is
+unchanged and the honest framing is arguably better: *which* parts of the method are portable
+is a more useful contribution than a second domain that simply worked. Two cheap follow-ups
+now sit here: a frozen re-run of sorting with the DEEP band at [4,8] (exploratory as it stands,
+since that band was chosen after seeing the data), and a **trained sorting executor**, which
+would test whether §6's vacuity is a fact about MPNNs on graphs or about learned executors in
+general.
 
 ---
 
