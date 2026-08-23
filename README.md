@@ -123,7 +123,8 @@ each reproducible from the command at its top.
 | [FINDINGS_E6.md](FINDINGS_E6.md) | Attempt to close the Dijkstra/Prim boundary with a direct key-dissociation probe; mechanism check failed informatively -- weight raises are monotonically invisible |
 | [FINDINGS_G.md](FINDINGS_G.md) | The reference-free question: do fingerprints separate the networks from *each other*? Null at both stages, confirmed on 12 fresh seeds |
 | [FINDINGS_H.md](FINDINGS_H.md) | Repairing the instrument: the orthogonality verdict is unsupported (r = -0.004 under separating power), and the firing rule was mis-timing every neural probe -- fixed, gap unchanged |
-| [ROUTES_TO_POSITIVE.md](ROUTES_TO_POSITIVE.md) | Ranked menu of routes still open to a positive result, with mechanism, cost and a frozen decision rule where one is possible |
+| [ROUTES_TO_POSITIVE.md](ROUTES_TO_POSITIVE.md) | Ranked menu of routes still open to a positive result, with mechanism, cost and a frozen decision rule where one is possible. Its top two items are now spent — §3 by G, §2.1/§2.2 by H — leaving §4, §5.1 and §7–§8 |
+| [SCOPE_ENLARGED_FAMILY.md](SCOPE_ENLARGED_FAMILY.md) | Scope (not a result) for ROUTES §5.3 + §7.2: five more reference algorithms and `\|I_min\|` at `\|A\| = 10`. Johnson is a positive control for *non*-separation; the growth-rate question is scoped as falsification only |
 
 Requires numpy for the symbolic work; PyTorch with CUDA for anything neural.
 

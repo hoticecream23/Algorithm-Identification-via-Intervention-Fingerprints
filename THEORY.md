@@ -232,12 +232,36 @@ margin.
 satisfied in every neural experiment run, so those experiments constrain the reference
 family rather than the models.
 
+**Stronger than Proposition 5, and not implied by it (Experiment G, `FINDINGS_G.md`).**
+Proposition 5 is a statement about the *comparison to a reference family* — it says a
+nearest-reference label is vacuous when `δ(M, Â)` approaches the reference-to-reference scale.
+It says nothing about whether two unknowns are distinguishable **from each other**, and
+`δ` is a metric on fingerprints, not on model-reference pairs. Asked directly — do
+intervention fingerprints separate networks *built* to differ in procedure? — the answer is
+**no**, NULL at both stages on pre-registered criteria, at chance 1-NN arm purity on twelve
+fresh seeds and **0/8** on the subset whose procedural difference is learned rather than
+imposed by the deployment harness. Eighteen of sixty-six model pairs are **bit-identical**,
+eleven of them across architectures. So the failure is not that the reference family is
+incomplete; on this model class the observable does not resolve the objects at all. That is a
+statement about `≡_{I,D}` restricted to a set of learned executors: under this `I` and this
+`D`, they are largely one equivalence class.
+
+The measurement has since survived three independent attacks — sensitivity normalisation
+(E5), the reference-free reformulation above, and a firing rule proved to fire at the intended
+point of each run (H2, `FINDINGS_H.md`, where the ratio moves 1.35 → 1.34 as both terms fall
+~29%). A fourth, mechanistic explanation of the neural null — that the fingerprint's
+discriminative and neural-disagreement axes are orthogonal — was **retracted** (H1) and should
+not be cited.
+
 **Open.**
 
 1. Is there a syntactic characterisation of `≡_{I,D}` — a normal form on `step_A` such that
    equivalence is decidable without simulation?
 2. Lower bounds on `|I|`. Empirically 2 interventions separate 5 algorithms at depth ≥ 7.
-   Is there a family requiring `Ω(log |A|)`, or does a constant always suffice?
+   Is there a family requiring `Ω(log |A|)`, or does a constant always suffice? *An
+   experiment enlarging the family to `|A| = 10` is scoped in `SCOPE_ENLARGED_FAMILY.md`;
+   note it is scoped as a **falsification** test only — two points cannot distinguish a
+   constant from a logarithm, since `log₂ 5 ≈ 2.3` and `log₂ 10 ≈ 3.3`.*
 3. Does `≡_{I,D}` coarsen monotonically in the instance depth of `D`? A3 is consistent with
    this and it is unproven.
 4. ~~Sensitivity normalisation.~~ **Closed, E5 (`FINDINGS_E5.md`).** Implemented as a
@@ -247,3 +271,15 @@ family rather than the models.
    **UNCHANGED** — 7 of 9 E3 checkpoints remain further from their nearest reference than
    two references sit from each other, under a measure explicitly built to discount
    baseline jumpiness. Proposition 5's vacuity is not a normalisation artefact.
+
+**A known limitation of the separation results above, recorded rather than left open
+(E6, `FINDINGS_E6.md`).** The `dijkstra`/`prim` pair is separated by exactly **one**
+intervention in the suite, so that edge of the separation matrix rests on a single
+observation. A probe was built to close it by dissociating the two selection keys directly
+— raise `w(u,v)` by `δ` while lowering `d[u]` by the same `δ`, leaving Dijkstra's `d[u]+w`
+exactly invariant while Prim's `w` moves — and its manipulation check **failed**. The
+reason generalises and is worth stating as a constraint on the intervention class:
+*relaxation is monotone, so a weight **increase** is as unobservable as an edge deletion.*
+Neither can be repaired by an algorithm that only ever lowers `d`, so neither carries
+information about which key that algorithm selects on. Any sharper probe for this pair must
+dissociate the keys through relaxation's one-directional response, not through a raise.

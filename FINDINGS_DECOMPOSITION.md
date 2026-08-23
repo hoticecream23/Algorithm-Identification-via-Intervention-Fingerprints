@@ -3,14 +3,44 @@
 Run: 2026-08-11, `python run_decompose.py`. Log `decompose_log.txt`, records
 `decompose_results.json`, models and fingerprints in `artifacts/`.
 
+> ## ⚠ RETRACTED IN PART — read this before citing anything below
+>
+> **The headline orthogonality claim in this document is UNSUPPORTED by its own data**
+> (Experiment H1, 2026-08-21, `FINDINGS_H.md`). Three independent problems:
+>
+> - `r = −0.233` is a correlation over **nine points**. Its exact two-sided permutation p over
+>   all 362,880 relabellings is **0.5445**, with a 95% Fisher-z interval of **[−0.777, +0.510]**.
+>   The data cannot distinguish orthogonality from strong positive alignment.
+> - The symbolic column below is a mean pairwise slot-**disagreement rate**, not separating
+>   power. Under separating power the correlation is **−0.004**; under unique-separator
+>   weighting it is **+0.240**. The result is not robust to the definition of "carries identity".
+> - The specific reading that `inject_unreached_node` "barely separates symbolic algorithms" is
+>   **false**: it is in the size-2 minimal separating set and is the *unique* separator of
+>   dijkstra/spfa.
+>
+> This document does label itself "no test, no p-value", and that caveat was honest — but the
+> conclusion drawn from it ("a complete account of the neural null", "no amount of data fixes an
+> orthogonal measurement") is far stronger than the number supports, and it was carried into
+> `HANDOFF.md` and `README.md` as the argument that closed off probe redesign. **It cannot bear
+> that weight, and `ROUTES_TO_POSITIVE.md` §4 is live again on the merits.**
+>
+> **The §3 pinned-predicate measurement is also superseded** in its mechanism, though not in its
+> observation: `latency` and `poked_settled` really are pinned, but H2 showed the cause is the
+> *firing rule* (networks poked at ~11% of their active life, so nothing has settled yet), not
+> exact-fixed-point questions. Repaired, the vacuity gap is unchanged.
+>
+> **What survives:** the vacuity measurement itself — every neural model 0.30–0.40 from its
+> nearest reference against a 0.303 reference-to-reference median. That has since survived E5,
+> G and H2 and is the load-bearing neural finding. Cite that, not the orthogonality.
+
 Descriptive decomposition, no test, no p-value. 9 hint-free models (3 plain, 3 gated,
 3 halt; seeds 700/800/900 series, disjoint from E3's).
 
-**Headline: the fingerprint's discriminative axes and its neural-disagreement axes are
-orthogonal — in fact slightly anti-correlated, r = −0.233.** Where algorithmic identity
-actually lives, neural models agree with everything; where neural models are distinctive,
-there is no identity to read. That is a complete account of the neural null, and it is not
-a resolution problem, a seed problem, or an architecture problem.
+**Headline (RETRACTED — see the banner above): the fingerprint's discriminative axes and its
+neural-disagreement axes are orthogonal — in fact slightly anti-correlated, r = −0.233.** Where
+algorithmic identity actually lives, neural models agree with everything; where neural models
+are distinctive, there is no identity to read. That was claimed as a complete account of the
+neural null, and as not a resolution problem, a seed problem, or an architecture problem.
 
 **The pre-registered hypothesis that motivated this run was wrong.** Deletion probes were
 predicted to dominate the offset (constraint 3: relaxation cannot repair a deletion, but a
@@ -47,7 +77,9 @@ nearly uninformative between symbolic algorithms.
 
 ## 2. The axes are orthogonal
 
-Correlation across the nine interventions between the two columns: **r = −0.233**.
+Correlation across the nine interventions between the two columns: **r = −0.233**
+[**RETRACTED, H1**: exact permutation p = 0.5445, 95% CI [−0.777, +0.510]; −0.004 under a
+separating-power score and +0.240 under unique-separator weighting. See the banner at the top.]
 
 A fingerprint works when the directions along which an unknown differs from the references
 are the directions that distinguish references from one another. Here they are unrelated,
