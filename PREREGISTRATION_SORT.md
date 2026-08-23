@@ -302,3 +302,76 @@ where every weaker notion of behavioural equivalence says "same".
 The prediction is falsifiable and may fail: the divergence requires a probe to scramble the
 prefix *before* the insertion point of a later round, which not every instance will satisfy.
 A negative here is reported as a negative.
+
+---
+
+## 12. Amendment, 2026-08-23 — instance generation, and which distribution the ladder keys on
+
+Recorded after SMOKE-seed diagnostics and **before** any REPORT-seed number was produced.
+What was seen on the smoke seed is stated explicitly below, because it is the reason this
+amendment exists and the reader should be able to discount it.
+
+### 12.1 Two bugs fixed
+
+**The null control was not null.** `swap_equal_pair` swapped two *positions* holding equal
+values **in the input**. By firing time the algorithm has permuted the array, so those slots no
+longer hold equal values, and the control was making a real edit: `spread1` and `depth` were
+non-null for all seven executors on the smoke seed.
+
+The underlying asymmetry with SSSP is worth recording as a transfer lesson. A node keeps its
+identity under relaxation, so a *position* is a stable handle in that domain. A sorting
+algorithm permutes positions, so the only handle it does not move is the *value*. The probe is
+renamed `swap_duplicate_value` and swaps the first and last slots currently holding a
+pre-selected duplicated value. Both slots hold the same value by construction for every
+algorithm on every instance, so the array is provably unchanged elementwise.
+
+**Shallow instances were unreachable.** At `n = 16` essentially every uniform random array has
+`leftward_depth >= 9`, so G3b had an empty `<= k` bucket (0 instances) and could not be
+evaluated, and the §8 sweep had no low rungs. `arrays_in_band` adds a second construction --
+disordering a sorted array with adjacent transpositions -- and mixes the two 50/50 before
+rejection-sampling on depth, so every band is reachable and no band is served by a single
+construction.
+
+### 12.2 Which distribution the primary ladder keys on
+
+§3.4 specifies the DEEP distribution as values "drawn from `0 .. n//2`" and "rejection-sampled
+on `leftward_depth`". That is i.i.d. uniform arrays with a depth filter. The transposition
+construction is a different process and was introduced by this amendment, not by §3.4.
+
+**The primary ladder therefore keys on the uniform distribution**, which is what §3.4 says. The
+mixed distribution is reported alongside it as a declared sensitivity arm.
+
+This is decided on the pre-registered text, not on the outcome — and it is decided *against*
+the arm that looked better on the smoke seed. Stated plainly so it can be checked: on the SMOKE
+seed the full family separated under the transposition-built distribution and did **not**
+separate under the mixed one, with `bubble_sort` / `cocktail_sort` as the single failing pair.
+Keying the ladder on the uniform arm is therefore the conservative choice, not the flattering
+one.
+
+### 12.3 One amendment round only
+
+This is the last amendment. The REPORT seed is run once after this document is committed, and
+whatever it returns is the result. No further generator, band, probe or threshold change will
+be made on the basis of a REPORT-seed number.
+
+### 12.4 G2's arithmetic edge case
+
+`firing_round` returns an integer round, so an executor whose active life is 3 rounds can fire
+only at 0.33 or 0.67 of it -- no round exists at 0.5. `bubble_truncated_k3` has a mean active
+life of 3.0 and therefore cannot satisfy `[0.35, 0.60]` for arithmetic reasons rather than
+methodological ones. Executors with mean active life below 5 rounds are reported with their
+fraction and exempted from G2 on that ground. Declared here rather than discovered later.
+
+### 12.5 G-null is reported at two levels
+
+The null control provably cannot change `d`, so the direct check is whether the intervened
+trajectory is bit-identical to the control. That is reported alongside the pre-registered
+predicate-level criterion.
+
+They are expected to disagree for `bubble_truncated_k3`, for a reason that is not a response:
+`probe`'s reference arm restarts the executor on the post-poke array, which hands a
+budget-limited algorithm a fresh allowance of k passes that the intervened run has already
+spent. Measured on the smoke seed: intervened == control on 120/120 for **all seven**
+executors, while the reference differs from the control on 40/40 for the truncated one alone.
+Both numbers are reported. The predicate-level criterion is not quietly relaxed — it is
+reported as failing for that executor, with the mechanism named.

@@ -15,6 +15,7 @@ floats. It should be set from the noise floor measured on control runs, not by h
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
@@ -32,6 +33,42 @@ TOL = 1e-6
 
 
 _eq = d_equal  # one definition of "these estimates agree", shared with the timing code
+
+
+@dataclass(frozen=True)
+class Domain:
+    """The three places `probe` has to know what domain it is in.
+
+    Everything else in this module -- the seven predicates, the aggregation, the
+    stability rule -- is domain-agnostic, and so is all of `separation.py` and
+    `identify.py`. Isolating the coupling here is what lets one predicate extractor
+    serve both SSSP and sorting, and it makes the size of the domain-specific
+    surface an auditable fact rather than a claim in prose.
+
+    `make_targets`  -- algorithm-independent landmarks in the instance.
+    `site_distance` -- the metric the `depth` predicate reports in. Hop distance for
+                       graphs, index distance for arrays.
+    `at_risk`       -- slots the poke itself moved, given the state either side of
+                       it. SSSP probes touch one node and `probe` already marks the
+                       target site, so the default adds nothing; sorting probes are
+                       permutations that move several slots at once.
+
+    Defaults reproduce the pre-existing SSSP behaviour exactly, so every runner
+    written before this seam existed keeps producing byte-identical output.
+    """
+
+    name: str
+    make_targets: Callable[..., object]
+    site_distance: Callable[..., np.ndarray]
+    at_risk: Callable[[np.ndarray, np.ndarray, float], np.ndarray]
+
+
+SSSP_DOMAIN = Domain(
+    name="sssp",
+    make_targets=compute_targets,
+    site_distance=lambda graph, site: graph.hop_distances(site),
+    at_risk=lambda pre, post, tol: np.zeros(pre.shape, dtype=bool),
+)
 
 
 def _bucket_count(k: int) -> str:
@@ -63,20 +100,24 @@ def _settle_round(traj: list[State], tol: float = TOL) -> int:
 
 def probe(
     alg_ctor,
-    graph: Graph,
+    graph: Graph,  # any instance with `.copy()`; sorting passes an `ArrayInstance`
     source: int,
     intervention: Intervention,
     budget: int,
     tol: float = TOL,
     absolute_firing: bool = False,
+    domain: Domain = SSSP_DOMAIN,
 ) -> dict[str, str]:
     """Run control / intervened / reference rollouts and read off the predicates.
 
     The reference is a fresh run of the *same* algorithm on the post-intervention
     graph. That makes "recovered" mean something precise: the mid-run poke left the
     algorithm in the state it would have reached had the graph always been that way.
+
+    `domain` supplies the three domain-coupled pieces (see `Domain`). Its default is
+    SSSP, so this function behaves exactly as it did before the seam existed.
     """
-    targets = compute_targets(graph, source)
+    targets = domain.make_targets(graph, source)
     site = intervention.target_node(targets)
 
     control = alg_ctor(graph.copy(), source).run(budget)
@@ -85,10 +126,13 @@ def probe(
     g_live = graph.copy()
     ex = alg_ctor(g_live, source)
     fired = {"done": False}
+    moved = {"mask": None}
 
     def hook(executor, r):
         if r == t and not fired["done"]:
+            pre = executor.d.copy()
             intervention.apply(executor, targets)
+            moved["mask"] = domain.at_risk(pre, executor.d, tol)
             fired["done"] = True
 
     intervened = ex.run(budget, hook=hook)
@@ -101,6 +145,8 @@ def probe(
     # which would otherwise wash every difference out.
     at_risk = ~_eq(ctrl_f, ref_f, tol)
     at_risk[site] = True
+    if moved["mask"] is not None:
+        at_risk |= moved["mask"]
 
     correct = _eq(iv_f, ref_f, tol)[at_risk]
     frac = float(correct.mean()) if correct.size else 1.0
@@ -123,8 +169,8 @@ def probe(
     r1 = min(t + 1, len(intervened) - 1)
     spread1 = _bucket_count(int((~_eq(intervened[r1].d, control[r1].d, tol)).sum()))
 
-    hop = graph.hop_distances(site)
-    ever = np.zeros(graph.n, dtype=bool)
+    hop = domain.site_distance(graph, site)
+    ever = np.zeros(ctrl_f.shape, dtype=bool)
     for r in range(t + 1, len(intervened)):
         ever |= ~_eq(intervened[r].d, control[r].d, tol)
     depth = _bucket_depth(hop[ever].max() if ever.any() else np.inf)
