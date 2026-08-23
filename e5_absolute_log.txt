@@ -1,0 +1,52 @@
+======================================================================
+NEGATIVE CONTROL -- does normalisation disturb the symbolic separation?
+======================================================================
+  fingerprinted bellman_ford
+  fingerprinted bf_truncated_k3
+  fingerprinted spfa
+  fingerprinted dijkstra
+  fingerprinted prim
+  [raw] unseparated pairs: none
+  [raw] minimal separating set: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+  [normalised] unseparated pairs: none
+  [normalised] minimal separating set: ['insert_improving_edge', 'inject_unreached_node'] (size 2)
+
+  PASS -- unseparated empty and |minimal| <= 3 required
+
+probe-graph depths: [5, 6, 5, 5, 5, 5, 5, 6] (median 5.0)
+
+======================================================================
+Building symbolic reference fingerprints
+  reference-to-reference median: raw 0.2158  normalised 0.5833
+
+======================================================================
+PRIMARY -- checkpoint distance to nearest reference, raw vs normalised
+======================================================================
+  restricted to the 9 pre-registered E3 checkpoints (--all-checkpoints to include G's Stage-2 set)
+  gated_800      raw d_near=0.2941 (bellman_ford    )  norm d_near=0.5000 (bellman_ford    )  CLOSED
+  gated_801      raw d_near=0.3611 (bellman_ford    )  norm d_near=0.5455 (bellman_ford    )  CLOSED
+  gated_802      raw d_near=0.1034 (bellman_ford    )  norm d_near=0.3750 (bellman_ford    )  CLOSED
+  halt_900       raw d_near=0.2667 (bellman_ford    )  norm d_near=0.3333 (bf_truncated_k3 )  CLOSED
+  halt_901       raw d_near=0.3396 (bf_truncated_k3 )  norm d_near=0.2500 (bf_truncated_k3 )  CLOSED
+  halt_902       raw d_near=0.2581 (bellman_ford    )  norm d_near=0.3333 (bf_truncated_k3 )  CLOSED
+  plain_700      raw d_near=0.3158 (bellman_ford    )  norm d_near=0.5000 (bellman_ford    )  CLOSED
+  plain_701      raw d_near=0.2973 (bellman_ford    )  norm d_near=0.4706 (bellman_ford    )  CLOSED
+  plain_702      raw d_near=0.3750 (bellman_ford    )  norm d_near=0.6154 (bellman_ford    )  still-vacuous
+
+======================================================================
+SECONDARY -- null-control response rate (references, for comparison)
+  bellman_ford     0.310
+  bf_truncated_k3  0.254
+  dijkstra         0.283
+  prim             0.136
+  spfa             0.333
+
+======================================================================
+VERDICT (pre-registered ladder, PREREGISTRATION_E5E6.md)
+  8/9 checkpoints CLOSED (normalised d_near < normalised reference-to-reference median)
+  CLOSED. Proposition 5's hypothesis fails under a normalised measure.
+  This is a significant reversal and MUST be replicated on fresh probe
+  graphs before it is written down as anything -- see the ladder note
+  in PREREGISTRATION_E5E6.md.
+
+wrote e5_absolute_results.json

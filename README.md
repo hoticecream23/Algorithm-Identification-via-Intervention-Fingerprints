@@ -18,10 +18,11 @@ five propositions with witnesses.
 The symbolic contribution is complete and positive. The neural transfer question was tested
 four separate ways — different training targets, hint-free supervision, three architectures
 built to differ in procedure, and a held-out replication of the one lead that turned up — and
-is negative on all four. A follow-up decomposition explains *why*: the fingerprint measures
-neural models along dimensions that carry no algorithmic identity, and is nearly blind along
-the dimensions that do. That is the current state of the project; see "What does not" below
-and `FINDINGS_DECOMPOSITION.md` for the mechanism.
+is negative on all four. A follow-up decomposition proposed a mechanism — that the fingerprint
+measures neural models along dimensions carrying no algorithmic identity, and is nearly blind
+along the dimensions that do — but Experiment H later found that argument **unsupported by its
+own data** (`FINDINGS_H.md`). The negative results stand; that particular explanation of them
+does not. See "What does not" below.
 
 The obvious repair was then tried and also failed, which is worth knowing before anyone tries
 it again. If a discrete label is the wrong thing to read off a continuous system, replace
@@ -86,13 +87,19 @@ halting, premature commitment, depth-limited propagation — and nothing else.
 execute differently — plain relaxation, a gated model with Dijkstra-like per-node
 commitment, and hard truncation — were trained hint-free on identical data and fingerprinted.
 17 of 17 models labelled `bellman_ford`; the mechanism check confirmed the architectural
-differences were genuinely active. A follow-up decomposition found why: every neural model
-sits 0.30-0.40 from its nearest symbolic reference, while two *different* symbolic
-algorithms sit 0.25-0.30 apart on the same measure — the label was never supported. The
-interventions that carry the most algorithmic identity are the ones neural models agree on
-most; the ones where neural models are distinctive carry almost no identity information
-(correlation across the intervention suite: r = -0.23). See `FINDINGS_E3.md` and
-`FINDINGS_DECOMPOSITION.md`.
+differences were genuinely active. A follow-up decomposition found the label was never
+supported in the first place: every neural model sits 0.30-0.40 from its nearest symbolic
+reference, while two *different* symbolic algorithms sit 0.25-0.30 apart on the same measure.
+That vacuity result has since survived three independent attacks on the measurement —
+sensitivity normalisation (E5), the reference-free reformulation (G), and a firing rule proved
+to fire where intended (H2) — and is the load-bearing neural finding.
+
+The decomposition's *other* claim, that the fingerprint's discriminative axes and its
+neural-disagreement axes are orthogonal at r = -0.23, was **retracted by H1**: over nine points
+that correlation has an exact permutation p of 0.5445 and a 95% interval of [-0.777, +0.510],
+and under a separating-power score it is -0.004. It was used to argue that no probe redesign
+could help; it cannot bear that weight. See `FINDINGS_E3.md`, `FINDINGS_G.md` and
+`FINDINGS_H.md`.
 
 ## Layout
 
@@ -109,7 +116,7 @@ each reproducible from the command at its top.
 | [FINDINGS_SHALLOW_SIGNALS.md](FINDINGS_SHALLOW_SIGNALS.md) | Four alternative in-distribution signals; also null |
 | [FINDINGS_E1_E2.md](FINDINGS_E1_E2.md) | Dijkstra-trained discrimination (blocked on MPNN capacity); hint-free regime (positive) |
 | [FINDINGS_E3.md](FINDINGS_E3.md) | Architecturally distinct procedures — the fair test, and its null; held-out replication |
-| [FINDINGS_DECOMPOSITION.md](FINDINGS_DECOMPOSITION.md) | Why the neural fingerprint fails: signal and noise are orthogonal |
+| [FINDINGS_DECOMPOSITION.md](FINDINGS_DECOMPOSITION.md) | Proposed mechanism for the neural null: signal and noise as orthogonal axes. **Its orthogonality claim was retracted by `FINDINGS_H.md` — read that first.** The vacuity measurement in the same document stands |
 | [FINDINGS_RESIDUAL.md](FINDINGS_RESIDUAL.md) | Exploratory follow-up: what the networks do that the family cannot -- a state-dependent, sometimes amplifying path gain. Nothing claimed; the frozen confirmatory test is stated |
 | [FINDINGS_FAMILY.md](FINDINGS_FAMILY.md) | Phase F: estimating parameters instead of classifying. The family contains all five algorithms exactly and the trained networks not at all. Also corrects two wrong claims in `fpid/response.py` |
 | [FINDINGS_E5.md](FINDINGS_E5.md) | Sensitivity normalisation: does it close the vacuity gap? No -- 7/9 checkpoints stay vacuous under a normalised measure |

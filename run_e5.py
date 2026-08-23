@@ -24,8 +24,9 @@ import numpy as np
 
 from fpid.algorithms import ALGORITHMS, finite_init
 from fpid.identify import distance, classify, margin
-from run_e1_e2 import NOISE_FLOOR, deep_probe_graphs, fingerprint_of
+from run_e1_e2 import NOISE_FLOOR, deep_probe_graphs
 from run_family_spike import load_checkpoints
+from run_h import fingerprint_of  # absolute-firing aware; see FINDINGS_H.md
 from run_phase_a import build_fingerprints
 
 
@@ -89,10 +90,17 @@ def main():
     ap.add_argument("--tol", type=float, default=2.5)
     ap.add_argument("--stability", type=float, default=0.8)
     ap.add_argument("--checkpoints", default="artifacts")
-    ap.add_argument("--out", default="e5_results.json")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--absolute", action="store_true",
+                    help="use the H2-repaired firing rule (settle_round_absolute). "
+                         "Off by default so the originally reported numbers reproduce.")
+    ap.add_argument("--all-checkpoints", action="store_true",
+                    help="include G's Stage-2 checkpoints; changes the ladder denominator.")
     ap.add_argument("--smoke", action="store_true")
     args = ap.parse_args()
 
+    if args.out is None:
+        args.out = "e5_absolute_results.json" if args.absolute else "e5_results.json"
     if args.smoke:
         args.probe_graphs = 3
 
@@ -113,7 +121,7 @@ def main():
     print("\n" + "=" * 70)
     print("Building symbolic reference fingerprints")
     refs = {
-        name: fingerprint_of(finite_init(ctor), probe_graphs, budget, args.tol)
+        name: fingerprint_of(finite_init(ctor), probe_graphs, budget, args.tol, args.absolute)
         for name, ctor in ALGORITHMS.items()
     }
     median_raw = ref_to_ref_median(refs, args.stability, normalise=False)
@@ -125,13 +133,25 @@ def main():
     print("PRIMARY -- checkpoint distance to nearest reference, raw vs normalised")
     print("=" * 70)
     checkpoints = load_checkpoints(args.checkpoints)
+    # The pre-registered ladder is stated on the nine E3 checkpoints ("7 of 9"). G later
+    # added twelve fresh Stage-2 checkpoints to the same directory; including them would
+    # silently change the denominator the ladder was frozen against, so restrict here and
+    # say so. Pass --all-checkpoints to widen it descriptively.
+    if not args.all_checkpoints:
+        keep = {f"{a}_{s}" for a, s in
+                (("plain", 700), ("plain", 701), ("plain", 702),
+                 ("gated", 800), ("gated", 801), ("gated", 802),
+                 ("halt", 900), ("halt", 901), ("halt", 902))}
+        checkpoints = [(n, c) for n, c in checkpoints if n in keep]
+        print(f"  restricted to the {len(checkpoints)} pre-registered E3 checkpoints "
+              f"(--all-checkpoints to include G's Stage-2 set)")
     if not checkpoints:
         print("  no checkpoints found under", args.checkpoints)
         return
 
     records = []
     for name, ctor in checkpoints:
-        fp = fingerprint_of(ctor, probe_graphs, budget, args.tol)
+        fp = fingerprint_of(ctor, probe_graphs, budget, args.tol, args.absolute)
         label_raw, dists_raw = classify(fp, refs, args.stability, normalise=False)
         label_norm, dists_norm = classify(fp, refs, args.stability, normalise=True)
         d_near_raw = min(dists_raw.values())
@@ -165,13 +185,14 @@ def main():
     print("VERDICT (pre-registered ladder, PREREGISTRATION_E5E6.md)")
     print(f"  {n_closed}/{n} checkpoints CLOSED (normalised d_near < normalised "
           f"reference-to-reference median)")
-    if n_closed >= 7:
+    need = max(1, round(7 * n / 9))
+    if n_closed >= need:
         verdict = "CLOSED"
         print("  CLOSED. Proposition 5's hypothesis fails under a normalised measure.")
         print("  This is a significant reversal and MUST be replicated on fresh probe")
         print("  graphs before it is written down as anything -- see the ladder note")
         print("  in PREREGISTRATION_E5E6.md.")
-    elif n - n_closed >= 7:
+    elif n - n_closed >= need:
         verdict = "UNCHANGED"
         print("  UNCHANGED. The vacuity is real and not a sensitivity artefact.")
         print("  Proposition 5 stands, strengthened.")
@@ -188,6 +209,7 @@ def main():
                 "records": records,
                 "verdict": verdict,
                 "noise_floor": NOISE_FLOOR,
+                "absolute_firing": bool(args.absolute),
             },
             f,
             indent=1,

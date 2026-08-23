@@ -5,8 +5,10 @@ Cold-start context for resuming this project in a fresh session. Read this first
 **Last updated:** 2026-08-21 — symbolic work complete and positive. **The neural side is
 finished twice over and now explained twice.** E3 tested the method on its designed target with
 both gates passing and returned a null, E3b failed to replicate the one lead, and the
-decomposition shows why — the fingerprint measures neural models along axes orthogonal to the
-ones carrying algorithmic identity (r = −0.233), with two of seven predicates pinned constant.
+decomposition proposed a mechanism — the fingerprint measuring neural models along axes
+orthogonal to the ones carrying algorithmic identity (r = −0.233), with two of seven predicates
+pinned constant. **Both halves of that mechanism were later overturned by H; see below and
+`FINDINGS_H.md` before citing either.**
 **Phase F then closed the obvious repair**: a parametric family replacing classification with
 estimation contains all five reference algorithms *bit-identically* and the trained networks at
 chi2 ~10^4 — so the networks are not interior points of the natural continuous family either.
@@ -24,9 +26,10 @@ question instead — do the fingerprints separate the networks *from each other*
 **NULL at both stages**, at chance purity on 12 fresh seeds and **0/8** on the `gated`/`plain`
 subset where the procedural difference is learned rather than imposed by the deploy harness.
 Eleven cross-arm pairs are *bit-identical*. **Next action: write up.** `THEORY.md` holds the
-definitional layer. `ROUTES_TO_POSITIVE.md` is a ranked menu of everything still open; after G
-its top item is §2.1 + §2.2 (repair the two pinned predicates, then re-check the orthogonality
-metric that closed the door on probe redesign). `FINDINGS_RESIDUAL.md` carries an exploratory
+definitional layer. `ROUTES_TO_POSITIVE.md` is a ranked menu of everything still open; **its
+shortlist is now spent — §3 by G, and §2.1 + §2.2 by H — so what remains live is §4 (new
+observables, reopened by H1), §5.1 (Family-2 with a state-dependent gain), and the symbolic and
+theoretical work in §7–§8.** `FINDINGS_RESIDUAL.md` carries an exploratory
 answer to "what are the networks doing instead" with its own frozen confirmatory design; it is
 explicitly not a result. **H then repaired the instrument in both places it was known broken.**
 H1: the `r = -0.233` orthogonality verdict is **UNSUPPORTED** — it is -0.004 under a
@@ -137,8 +140,10 @@ Confirming any of it needs freshly trained seeds; the frozen test is written dow
 Phase F also **corrected two wrong claims in `fpid/response.py`** that had been quoted as
 motivation for exactly this reframe — see the warning box under "If someone does resume the
 neural side". The "networks depend on 2-3 neighbours where every hard-`min` algorithm depends
-on exactly 1" separation is largely an estimator artefact. The orthogonality and vacuity results
-are independent and stand.
+on exactly 1" separation is largely an estimator artefact. The **vacuity** result is independent
+and stands — it has since survived three further attacks on the measurement (E5, G, H2). The
+**orthogonality** result does not: H1 found it UNSUPPORTED (p = 0.5445, and −0.004 under a
+separating-power score). Cite the vacuity result, not the orthogonality one.
 
 ---
 

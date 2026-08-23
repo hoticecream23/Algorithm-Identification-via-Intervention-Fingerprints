@@ -7,6 +7,39 @@ python run_e5.py
 Raw output: `e5_log.txt`, `e5_results.json`. Pre-registered in `PREREGISTRATION_E5E6.md`,
 written before this ran.
 
+> **Measured through a defect later found by H2 (`FINDINGS_H.md`). The verdict survives; the
+> individual distances below were taken at the wrong point in each network's run.** Every neural
+> fingerprint in this repository, E5's included, was taken with a firing rule that poked networks
+> at **~11% of their active life** against ~45% for the symbolic references —
+> `interventions.settle_round` anchors its activity threshold on the largest single-round change
+> a run makes, which for a continuous-output executor is its round-1 sentinel transient. H2
+> repaired this (`firing_round(absolute=True)`) and re-ran the vacuity question on the raw
+> measure: **still UNCHANGED**, `d_near` and the reference median both falling ~29% with the
+> ratio moving 1.35 → 1.34.
+>
+> **E5 was re-run under the repaired rule** (`python run_e5.py --absolute`, logs in
+> `e5_absolute_log.txt` / `e5_absolute_results.json`). Its raw column reproduces H2 exactly —
+> mean `d_near` 0.2901, reference median 0.2158, ratio 1.344, 1/9 closed — which validates the
+> pipeline. Its **normalised** column reads 8/9 CLOSED. **That is an artefact and is not
+> reported as a result**, for two independent reasons, either sufficient:
+>
+> 1. **It is a small-sample artefact of the mask.** Normalisation drops 60–87% of comparable
+>    slots; `dijkstra` vs `prim` falls from 45 slots to **6**, `prim` vs `spfa` to 7. On six
+>    slots a Hamming distance is quantised to multiples of 0.167, and the reference-to-reference
+>    median inflates to 0.5833. The CLOSED verdict is produced by that inflated *denominator*,
+>    not by any network moving closer to a reference — their normalised `d_near` values
+>    (0.25–0.62) are not better than before in absolute terms.
+> 2. **It is a fourth variant of the distance computed on data already looked at many times, and
+>    selected after the pre-registered variant returned UNCHANGED.** That is the exact shape of
+>    all five results this project has retracted, and `ROUTES_TO_POSITIVE.md`'s closing rule
+>    names this case specifically: *"if those come out UNCHANGED, that is the answer — not a
+>    prompt for a fifth variant."*
+>
+> **E5's verdict therefore stands at UNCHANGED**, supported by the pre-registered original run
+> and independently by H2's repaired-firing raw measurement. Anyone wanting to revive the
+> normalised-plus-repaired combination needs fresh probe graphs and a pre-registration written
+> before the run, per the CLOSED rung's own instruction below.
+
 ## The question
 
 `fpid/interventions.py`'s `_delete_nontree_edge` docstring claims "every other response
