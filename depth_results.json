@@ -1,0 +1,927 @@
+{
+  "passes": [
+    {
+      "n_graphs": 8,
+      "gates": {
+        "G1_depth": true,
+        "G2_firing": true,
+        "G3_negative_control": true,
+        "G4_slots": true
+      },
+      "summaries": {
+        "CONTROL/exploratory": {
+          "cohort": "exploratory",
+          "n": 9,
+          "closed": 1,
+          "need": 7,
+          "median_d_near": 0.2972972972972973,
+          "fired_in_window": 9,
+          "median_slots": 47,
+          "ratio": 1.377406183161579
+        },
+        "CONTROL/confirmatory": {
+          "cohort": "confirmatory",
+          "n": 12,
+          "closed": 6,
+          "need": 10,
+          "median_d_near": 0.21717171717171718,
+          "fired_in_window": 12,
+          "median_slots": 44,
+          "ratio": 1.006176876680474
+        },
+        "DEEP/exploratory": {
+          "cohort": "exploratory",
+          "n": 9,
+          "closed": 0,
+          "need": 7,
+          "median_d_near": 0.41025641025641024,
+          "fired_in_window": 9,
+          "median_slots": 42,
+          "ratio": 1.8479935609980453
+        },
+        "DEEP/confirmatory": {
+          "cohort": "confirmatory",
+          "n": 12,
+          "closed": 4,
+          "need": 10,
+          "median_d_near": 0.3657142857142857,
+          "fired_in_window": 12,
+          "median_slots": 44,
+          "ratio": 1.647354260089686
+        }
+      },
+      "arms": {
+        "CONTROL": {
+          "arm": "CONTROL",
+          "unseparated": [],
+          "minimal": [
+            "delete_tree_edge_near",
+            "insert_improving_edge",
+            "inject_unreached_node"
+          ],
+          "median": 0.21583850931677018,
+          "records": [
+            {
+              "checkpoint": "gated_800",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.29411764705882354,
+              "closed": false,
+              "slots": 45,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_801",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.3611111111111111,
+              "closed": false,
+              "slots": 47,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_802",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.10344827586206896,
+              "closed": true,
+              "slots": 40,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_810",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2222222222222222,
+              "closed": false,
+              "slots": 40,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_811",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.17857142857142858,
+              "closed": true,
+              "slots": 36,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_812",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.25,
+              "closed": false,
+              "slots": 48,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_813",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.3611111111111111,
+              "closed": false,
+              "slots": 46,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_900",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.26666666666666666,
+              "closed": false,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_901",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.33962264150943394,
+              "closed": false,
+              "slots": 49,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_902",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.25806451612903225,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_910",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.3142857142857143,
+              "closed": false,
+              "slots": 47,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_911",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.14285714285714285,
+              "closed": true,
+              "slots": 35,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_912",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.21212121212121213,
+              "closed": true,
+              "slots": 32,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_913",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.16216216216216217,
+              "closed": true,
+              "slots": 36,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_700",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.3157894736842105,
+              "closed": false,
+              "slots": 50,
+              "fire_frac": 0.4722222222222222
+            },
+            {
+              "checkpoint": "plain_701",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.2972972972972973,
+              "closed": false,
+              "slots": 49,
+              "fire_frac": 0.45454545454545453
+            },
+            {
+              "checkpoint": "plain_702",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.375,
+              "closed": false,
+              "slots": 51,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_710",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2894736842105263,
+              "closed": false,
+              "slots": 51,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_711",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2631578947368421,
+              "closed": false,
+              "slots": 49,
+              "fire_frac": 0.4807692307692308
+            },
+            {
+              "checkpoint": "plain_712",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.17142857142857143,
+              "closed": true,
+              "slots": 45,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_713",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.20588235294117646,
+              "closed": true,
+              "slots": 44,
+              "fire_frac": 0.45454545454545453
+            }
+          ],
+          "hop": 5.25,
+          "wdepth": 6.0,
+          "min_wdepth": 5.0
+        },
+        "DEEP": {
+          "arm": "DEEP",
+          "unseparated": [],
+          "minimal": [
+            "insert_improving_edge",
+            "inject_unreached_node"
+          ],
+          "median": 0.22200099552015928,
+          "records": [
+            {
+              "checkpoint": "gated_800",
+              "cohort": "exploratory",
+              "label": "prim",
+              "d_near": 0.41025641025641024,
+              "closed": false,
+              "slots": 45,
+              "fire_frac": 0.42857142857142855
+            },
+            {
+              "checkpoint": "gated_801",
+              "cohort": "exploratory",
+              "label": "prim",
+              "d_near": 0.39473684210526316,
+              "closed": false,
+              "slots": 43,
+              "fire_frac": 0.4722222222222222
+            },
+            {
+              "checkpoint": "gated_802",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.35135135135135137,
+              "closed": false,
+              "slots": 42,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_810",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.41025641025641024,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_811",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.37142857142857144,
+              "closed": false,
+              "slots": 35,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_812",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.15384615384615385,
+              "closed": true,
+              "slots": 30,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_813",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.4,
+              "closed": false,
+              "slots": 43,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_900",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.4166666666666667,
+              "closed": false,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_901",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3684210526315789,
+              "closed": false,
+              "slots": 38,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_902",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.41025641025641024,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_910",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.39473684210526316,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_911",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.32432432432432434,
+              "closed": false,
+              "slots": 46,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_912",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3953488372093023,
+              "closed": false,
+              "slots": 48,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_913",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.36,
+              "closed": false,
+              "slots": 50,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_700",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.44,
+              "closed": false,
+              "slots": 50,
+              "fire_frac": 0.42857142857142855
+            },
+            {
+              "checkpoint": "plain_701",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.30303030303030304,
+              "closed": false,
+              "slots": 39,
+              "fire_frac": 0.45454545454545453
+            },
+            {
+              "checkpoint": "plain_702",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.4634146341463415,
+              "closed": false,
+              "slots": 44,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_710",
+              "cohort": "confirmatory",
+              "label": "prim",
+              "d_near": 0.21052631578947367,
+              "closed": true,
+              "slots": 47,
+              "fire_frac": 0.4722222222222222
+            },
+            {
+              "checkpoint": "plain_711",
+              "cohort": "confirmatory",
+              "label": "prim",
+              "d_near": 0.45454545454545453,
+              "closed": false,
+              "slots": 46,
+              "fire_frac": 0.4807692307692308
+            },
+            {
+              "checkpoint": "plain_712",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.21621621621621623,
+              "closed": true,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_713",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.21951219512195122,
+              "closed": true,
+              "slots": 45,
+              "fire_frac": 0.45454545454545453
+            }
+          ],
+          "hop": 9.375,
+          "wdepth": 9.75,
+          "min_wdepth": 8.0
+        }
+      },
+      "verdict": "UNCHANGED"
+    },
+    {
+      "n_graphs": 24,
+      "gates": {
+        "G1_depth": true,
+        "G2_firing": true,
+        "G3_negative_control": true,
+        "G4_slots": true
+      },
+      "summaries": {
+        "CONTROL/exploratory": {
+          "cohort": "exploratory",
+          "n": 9,
+          "closed": 1,
+          "need": 7,
+          "median_d_near": 0.28125,
+          "fired_in_window": 9,
+          "median_slots": 43,
+          "ratio": 1.7016806722689075
+        },
+        "CONTROL/confirmatory": {
+          "cohort": "confirmatory",
+          "n": 12,
+          "closed": 1,
+          "need": 10,
+          "median_d_near": 0.21921921921921922,
+          "fired_in_window": 12,
+          "median_slots": 40,
+          "ratio": 1.3263683851919146
+        },
+        "DEEP/exploratory": {
+          "cohort": "exploratory",
+          "n": 9,
+          "closed": 0,
+          "need": 7,
+          "median_d_near": 0.3684210526315789,
+          "fired_in_window": 9,
+          "median_slots": 38,
+          "ratio": 1.8433319703253694
+        },
+        "DEEP/confirmatory": {
+          "cohort": "confirmatory",
+          "n": 12,
+          "closed": 2,
+          "need": 10,
+          "median_d_near": 0.33676470588235297,
+          "fired_in_window": 12,
+          "median_slots": 41,
+          "ratio": 1.684944832539009
+        }
+      },
+      "arms": {
+        "CONTROL": {
+          "arm": "CONTROL",
+          "unseparated": [],
+          "minimal": [
+            "delete_tree_edge_near",
+            "insert_improving_edge",
+            "inject_unreached_node"
+          ],
+          "median": 0.16527777777777777,
+          "records": [
+            {
+              "checkpoint": "gated_800",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.28125,
+              "closed": false,
+              "slots": 39,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_801",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.30303030303030304,
+              "closed": false,
+              "slots": 42,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_802",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.0967741935483871,
+              "closed": true,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_810",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.1724137931034483,
+              "closed": false,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_811",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2222222222222222,
+              "closed": false,
+              "slots": 33,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_812",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.18181818181818182,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_813",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.3225806451612903,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_900",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.26666666666666666,
+              "closed": false,
+              "slots": 34,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_901",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.3055555555555556,
+              "closed": false,
+              "slots": 44,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_902",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.2222222222222222,
+              "closed": false,
+              "slots": 43,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_910",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.23529411764705882,
+              "closed": false,
+              "slots": 42,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_911",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.14705882352941177,
+              "closed": true,
+              "slots": 31,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_912",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.22580645161290322,
+              "closed": false,
+              "slots": 28,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_913",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.17647058823529413,
+              "closed": false,
+              "slots": 32,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_700",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.2702702702702703,
+              "closed": false,
+              "slots": 45,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "plain_701",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.2894736842105263,
+              "closed": false,
+              "slots": 45,
+              "fire_frac": 0.4772727272727273
+            },
+            {
+              "checkpoint": "plain_702",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.38461538461538464,
+              "closed": false,
+              "slots": 46,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_710",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2702702702702703,
+              "closed": false,
+              "slots": 46,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_711",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.2631578947368421,
+              "closed": false,
+              "slots": 45,
+              "fire_frac": 0.46153846153846156
+            },
+            {
+              "checkpoint": "plain_712",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.21621621621621623,
+              "closed": false,
+              "slots": 41,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_713",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.21212121212121213,
+              "closed": false,
+              "slots": 39,
+              "fire_frac": 0.45454545454545453
+            }
+          ],
+          "hop": 5.458333333333333,
+          "wdepth": 6.083333333333333,
+          "min_wdepth": 5.0
+        },
+        "DEEP": {
+          "arm": "DEEP",
+          "unseparated": [],
+          "minimal": [
+            "insert_improving_edge",
+            "inject_unreached_node"
+          ],
+          "median": 0.19986690328305234,
+          "records": [
+            {
+              "checkpoint": "gated_800",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3684210526315789,
+              "closed": false,
+              "slots": 42,
+              "fire_frac": 0.4444444444444444
+            },
+            {
+              "checkpoint": "gated_801",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.38461538461538464,
+              "closed": false,
+              "slots": 39,
+              "fire_frac": 0.4772727272727273
+            },
+            {
+              "checkpoint": "gated_802",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3333333333333333,
+              "closed": false,
+              "slots": 38,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_810",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3235294117647059,
+              "closed": false,
+              "slots": 35,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_811",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.375,
+              "closed": false,
+              "slots": 32,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_812",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.29411764705882354,
+              "closed": false,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "gated_813",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.375,
+              "closed": false,
+              "slots": 43,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_900",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.40540540540540543,
+              "closed": false,
+              "slots": 38,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_901",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.32432432432432434,
+              "closed": false,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_902",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3611111111111111,
+              "closed": false,
+              "slots": 36,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_910",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.35135135135135137,
+              "closed": false,
+              "slots": 40,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_911",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.3055555555555556,
+              "closed": false,
+              "slots": 42,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_912",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.35,
+              "closed": false,
+              "slots": 44,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "halt_913",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.358974358974359,
+              "closed": false,
+              "slots": 43,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_700",
+              "cohort": "exploratory",
+              "label": "bellman_ford",
+              "d_near": 0.4090909090909091,
+              "closed": false,
+              "slots": 44,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_701",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.2413793103448276,
+              "closed": false,
+              "slots": 34,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_702",
+              "cohort": "exploratory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.5,
+              "closed": false,
+              "slots": 47,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_710",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.1951219512195122,
+              "closed": true,
+              "slots": 48,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_711",
+              "cohort": "confirmatory",
+              "label": "prim",
+              "d_near": 0.4857142857142857,
+              "closed": false,
+              "slots": 44,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_712",
+              "cohort": "confirmatory",
+              "label": "bellman_ford",
+              "d_near": 0.1891891891891892,
+              "closed": true,
+              "slots": 37,
+              "fire_frac": 0.5
+            },
+            {
+              "checkpoint": "plain_713",
+              "cohort": "confirmatory",
+              "label": "bf_truncated_k3",
+              "d_near": 0.23529411764705882,
+              "closed": false,
+              "slots": 39,
+              "fire_frac": 0.45454545454545453
+            }
+          ],
+          "hop": 9.875,
+          "wdepth": 10.125,
+          "min_wdepth": 8.0
+        }
+      },
+      "verdict": "UNCHANGED"
+    }
+  ],
+  "final": "UNCHANGED"
+}

@@ -426,7 +426,7 @@ Seven of nine sit further from the family than the negative control does.
 
 ### 6.4 Why we believe this is a real boundary and not a measurement artefact
 
-The vacuity gap survived three independent attacks on the measurement:
+The vacuity gap survived four independent attacks on the measurement:
 
 1. **Sensitivity normalisation.** Responses were never normalised against the null control, so a
    globally jumpy model could look "different" for free. Implementing that normalisation leaves
@@ -438,12 +438,32 @@ The vacuity gap survived three independent attacks on the measurement:
    so networks were probed at **~11% of their active life** against ~45% for the references.
    Repaired, all nine networks fire at 0.44–0.50 — and the gap is **unchanged**, both terms
    falling ~29% together with the ratio moving 1.35 → 1.34. The vacuity is scale-invariant.
+4. **The instrument's resolving power.** Our probe distribution was gated on hop eccentricity,
+   which puts it at `depth_w ≈ 6` — where `|S_min| = 3`, one step above the regime in which no
+   probe set separates anything (§5.3). So the null might have been measured near the
+   instrument's floor. Re-running the identical measurement at `depth_w ≈ 10`, where
+   `|S_min| = 2`, the gap does not close: it **widens**, from 1.38 to 1.85 on the nine
+   original checkpoints and 1.33 to 1.68 on the twelve held-out ones, with 0/9 and 2/12
+   closing against pre-registered thresholds of 7/9 and 10/12. Both terms grow — the
+   references do spread apart as resolution improves — but the networks move away from the
+   reference family faster than the references separate from each other. The control arm
+   reproduces the published 1.34 to within seed noise, so this is not a code difference.
 
 We regard (3) as an independently useful finding: **a progress-relative timing rule validated on
 discrete frontier-propagating algorithms silently mis-times every continuous-output executor it
 is applied to**, because the relative threshold is anchored on a transient the continuous
 executor has and the discrete one does not. Anyone building progress-relative probes for learned
 models will hit it.
+
+And we regard (4) as the strongest of the four, because it is the only one that attacks the
+*distribution* rather than the metric or the timing, and because it fails in the informative
+direction: giving the instrument more resolving power does not begin to resolve these objects,
+it shows them to be further outside the reference family than the shallow measurement
+suggested. It also carries a practical warning — the shallow distribution is the *unstable*
+one. Between 8 and 24 probe instances the shallow arm's ratio moves 1.01 → 1.33 while the deep
+arm moves 1.65 → 1.68, so a protocol run near the identifiability boundary is noisy as well as
+under-powered.
+
 
 ### 6.5 What we do *not* claim
 
@@ -544,6 +564,7 @@ Every quantitative claim maps to a findings document and its reproducing command
 | 6.2 | 3/12; 0/8; 18/66 identical, 11 cross-arm | `FINDINGS_G.md` |
 | 6.3 | bit-identical embedding; `χ² ~ 10⁴`; controls | `FINDINGS_FAMILY.md` |
 | 6.4 | normalisation; firing repair; 1.35 → 1.34 | `FINDINGS_E5.md`, `FINDINGS_H.md` |
+| 6.4 | depth arm: 1.38 → 1.85 and 1.33 → 1.68; 0/9 and 2/12; control reproduces 1.34 | `FINDINGS_DEPTH.md` |
 | 7.2 | `r = −0.233` retraction; `p = 0.5445` | `FINDINGS_H.md` (H1) |
 
 **Withdrawn numbers.** An earlier version of §5.2 reported that truncated-BF is

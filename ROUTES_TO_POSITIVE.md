@@ -432,7 +432,14 @@ If only three things get done:
 1. ~~**§3 — the neural-vs-neural discrimination run.**~~ **Done 2026-08-20, NULL at both
    stages.** See the banner at §3 and `FINDINGS_G.md`. Do not re-run it; the question is closed
    and the pre-registration forbids a follow-up statistic on the same data.
-2. **§2.1 + §2.2 — repair the pinned predicates, and recheck the orthogonality metric.** ~29% of
+2. ~~**§2.1 + §2.2 — repair the pinned predicates, and recheck the orthogonality metric.**~~
+   **Both executed by Experiment H (2026-08-23).** §2.1's proposed mechanism was wrong but the
+   defect was real and is fixed; §2.2 was confirmed and produced the `r = −0.233` retraction.
+   **Experiment D then closed the follow-on question** the retraction reopened from the other
+   side: probing at weighted depth ~10 rather than ~6 does not close the vacuity gap, it widens
+   it (`FINDINGS_DEPTH.md`). So the standing top item is now **§5.1** below. Original text:
+
+   ~29% of
    every neural fingerprint is currently a constant, and the number that closed the door on probe
    redesign is computed against a proxy that ranks an indispensable probe second-last. **Now the
    top item**, and better motivated after G: an instrument in which eleven cross-arm model pairs

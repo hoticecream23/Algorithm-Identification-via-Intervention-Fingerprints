@@ -60,6 +60,13 @@ pairs. Truncated Bellman-Ford is separable from real Bellman-Ford on the subpopu
 the two return **identical answers on every instance** (weighted depth <= k, 137/137
 measured) — see `FINDINGS_P2_WITNESS.md`, which supersedes the old "11/12" figure.
 
+**Established (the negative is robust).** The vacuity gap has now survived four independent
+attacks: sensitivity normalisation (E5), the reference-free reformulation (G), the repaired
+firing rule (H2), and the instrument's resolving power (D). D is the sharpest — every neural
+experiment probed at weighted depth ~6, one step above the regime where nothing separates;
+re-measured at weighted depth ~10 the gap **widens** (1.38 → 1.85 on the nine, 1.33 → 1.68 on
+the twelve), with the control arm reproducing H2's published 1.34. See `FINDINGS_DEPTH.md`.
+
 **Refuted (neural).** The headline claim the project was built on — *fingerprint similarity
 predicts OOD generalization better than in-distribution validation accuracy* — is **not
 supported**. Models differing 5-8x in OOD error are fingerprint-identical in-distribution.
