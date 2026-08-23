@@ -128,3 +128,43 @@ def true_sssp(graph: Graph, source: int) -> np.ndarray:
         if not changed:
             break
     return d
+
+
+def d_close(a: np.ndarray, b: np.ndarray) -> bool:
+    """Elementwise agreement that counts INF == INF as agreement."""
+    both_inf = np.isinf(a) & np.isinf(b)
+    return bool(np.all(both_inf | (np.abs(a - b) <= EPS)))
+
+
+def weighted_depth(graph: Graph, source: int) -> float:
+    """Rounds of synchronous relaxation needed to reach ground truth.
+
+    This is the propagation depth that *relaxation* actually sees, and it is not
+    `hop_distances(...).max()`. Hop eccentricity counts edges on a minimum-*hop*
+    path, while relaxation propagates along minimum-*weight* paths, which may use
+    strictly more edges. A graph in which every node is two hops from the source
+    can therefore still need four or five rounds to settle. The two measures
+    diverge exactly where truncation does its damage, which is why the truncation
+    results are keyed on this one and not on hop eccentricity.
+
+    Equivalently: the largest number of edges on any shortest-weight path from
+    `source`, taking the fewest-edge path where several are tied.
+
+    Because `BellmanFord` here is synchronous -- it reads `d` from the previous
+    round, so information travels exactly one hop per round -- this is also
+    exactly the round at which full Bellman-Ford settles, and `bf_truncated_k`
+    returns the correct answer iff `weighted_depth <= k`.
+    """
+    truth = true_sssp(graph, source)
+    reach = np.isfinite(truth)
+    d = np.full(graph.n, INF)
+    d[source] = 0.0
+    for k in range(graph.n + 1):
+        if d_close(d[reach], truth[reach]):
+            return float(k)
+        new_d = d.copy()
+        for u, v, w in graph.arcs():
+            if d[u] + w < new_d[v] - EPS:
+                new_d[v] = d[u] + w
+        d = new_d
+    return INF

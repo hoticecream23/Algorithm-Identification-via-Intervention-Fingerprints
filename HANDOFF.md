@@ -55,9 +55,10 @@ native Windows). Run scripts from the repo root.
 **Established (symbolic, strong).** Algorithm identity is recoverable from causal response
 to interventions, and is only well-defined *relative to an intervention class and an input
 distribution*. Five algorithms are fully separated by a minimal set of two interventions on
-graphs of depth >= 5; below depth ~4 no set in the suite separates all pairs. Truncated
-Bellman-Ford is separable from real Bellman-Ford on shallow graphs where the two return
-**identical answers on 11/12 instances**.
+graphs of **weighted** depth >= 6; below weighted depth ~5 no set in the suite separates all
+pairs. Truncated Bellman-Ford is separable from real Bellman-Ford on the subpopulation where
+the two return **identical answers on every instance** (weighted depth <= k, 137/137
+measured) — see `FINDINGS_P2_WITNESS.md`, which supersedes the old "11/12" figure.
 
 **Refuted (neural).** The headline claim the project was built on — *fingerprint similarity
 predicts OOD generalization better than in-distribution validation accuracy* — is **not
@@ -311,10 +312,12 @@ edge-weight scale of 1-10 (100% accuracy; margin falls 0.146 -> 0.077). The fing
 intervened rollouts. That is why it is near-orthogonal to accuracy by construction — and why
 it must never be reported as a quality metric. Report the **margin**, not just the label.
 
-**A3 — identifiability boundary.** Minimal separating set: 2 interventions at depth 7+, 3 at
-depth 5, **impossible below depth ~4**. On shallow graphs truncated-BF returns output
-identical to BF on 11/12 instances and is *still* separable; on deeper graphs that same
-algorithm is correct on 0/12. A predicted threshold at k=3 was **falsified** — truncation is
+**A3 — identifiability boundary.** Minimal separating set: 2 interventions at weighted depth
+9+, 3 at weighted depth 6, **impossible below weighted depth ~5**. All depths are now quoted
+on `fpid.graphs.weighted_depth` (rounds of relaxation to settle), *not* hop eccentricity; the
+`|S_min|` sequence replicates, only the axis changed. Where weighted depth <= k, truncated-BF
+returns output identical to BF on **every** instance and is *still* separable; above k it is
+correct on none. A predicted threshold at k=3 was **falsified** — truncation is
 detectable at every depth, because limited *runtime* is observable even when limited
 *propagation depth* is not.
 
@@ -404,9 +407,11 @@ before replication.
 
 Each was discovered by a run that produced confident-looking garbage.
 
-1. **Fingerprint on graphs of propagation depth >= 5.** Below depth ~4 no intervention set
-   separates all pairs. CLRS's default distribution is dense and shallow — used unmodified
-   it lands where the method provably cannot work and returns a null about nothing.
+1. **Fingerprint on graphs of weighted propagation depth >= 6** (`fpid.graphs.weighted_depth`,
+   not `hop_distances().max()` — they differ by 1-2 rounds). Below weighted depth ~5 no
+   intervention set separates all pairs. CLRS's default distribution is dense and shallow —
+   used unmodified it lands where the method provably cannot work and returns a null about
+   nothing.
 2. **Interventions fire relative to each algorithm's own progress**, never at an absolute
    round. Round 5 is five hops for BF and five settled nodes for Dijkstra; absolute rounds
    land after termination and measure nothing.

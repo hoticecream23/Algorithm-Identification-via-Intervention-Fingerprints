@@ -15,7 +15,10 @@ python run_family_spike.py --gate 0
 python run_family_spike.py --gate all
 
 # Identifiability boundary vs graph depth (minutes)
-python run_identifiability.py --graphs 12 --nodes 24
+python run_identifiability.py --graphs 40 --nodes 24 --seed 1
+
+# P2 witness: output-identical executors separated by response (~10 min, numpy only)
+python run_p2_witness.py
 
 # E3 architecturally-distinct procedure test
 python run_e3.py
@@ -65,7 +68,7 @@ The project has two layers — a symbolic layer (`fpid/` minus `neural.py`/`trai
 
 ### Intervention pipeline
 
-1. Draw graph from distribution with propagation depth ≥ 5 (depth < 4 is provably non-separating)
+1. Draw graph from distribution with **weighted** propagation depth ≥ 6 (`fpid.graphs.weighted_depth`; below ≈ 5 is provably non-separating)
 2. Run algorithm to produce **control** trajectory
 3. Fire intervention at `t = clip(T/2, 1, budget-1)` where `T` is the settling round — progress-relative, never absolute
 4. Compare **intervened** vs **control** (not vs the reference run)
@@ -80,7 +83,7 @@ Pre-registration files (`PREREGISTRATION_*.md`) are written before each experime
 
 ## Key constraints (violations silently corrupt results)
 
-1. **Probe graphs must have propagation depth ≥ 5.** Below depth ~4 no intervention set separates all pairs; dense shallow graphs return a null about nothing.
+1. **Probe graphs must have weighted propagation depth ≥ 6.** Use `fpid.graphs.weighted_depth`, not `hop_distances().max()` — relaxation follows minimum-*weight* paths, which use more edges than minimum-*hop* ones, so the two differ by 1–2 rounds and only coincide on a spanning path. Below weighted depth ≈ 5 no intervention set separates all pairs; dense shallow graphs return a null about nothing. Bucketing on the hop axis is what broke the original §5.2 result (`FINDINGS_P2_WITNESS.md`).
 2. **Interventions fire relative to each algorithm's own progress** — never at an absolute round number.
 3. **Relaxation is monotone** — it only lowers `d`. A model that responds to an edge deletion is not doing relaxation.
 4. **`UNREACHED` is graph-family dependent.** Default `1e3` suits density-0.05 n=24 graphs. Depth-17 path graphs need it raised.

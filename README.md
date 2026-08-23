@@ -57,15 +57,20 @@ bit-identical fingerprints (`FINDINGS_G.md`). The neural side is now closed from
 
 **Algorithm identity is only well-defined relative to an intervention class *and* an input
 distribution.** Two of nine interventions suffice to separate all five reference algorithms
-on graphs of propagation depth >= 5. Below depth ~4, no subset of the suite separates all
-pairs — Dijkstra and SPFA become behaviourally identical, as do Dijkstra and Prim. This
-makes the natural research object not "the fingerprint" but *the minimal intervention set
-that distinguishes a family of algorithms over a given input distribution*.
+on graphs of weighted propagation depth >= 6. Below weighted depth ~5, no subset of the suite
+separates all pairs — Dijkstra and SPFA become behaviourally identical, as do Dijkstra and
+Prim. This makes the natural research object not "the fingerprint" but *the minimal
+intervention set that distinguishes a family of algorithms over a given input distribution*.
 
-**Behavioural identity is not accuracy.** On shallow graphs, truncated Bellman-Ford returns
-answers identical to real Bellman-Ford on 11 of 12 instances — no accuracy metric separates
-them — and the fingerprint separates them anyway. On deeper graphs, that same truncated
-algorithm is correct on 0 of 12. Fingerprints also recover the trained algorithm from real
+Depth here is `fpid.graphs.weighted_depth` — rounds of relaxation needed to settle — and not
+hop eccentricity. The two differ by 1–2 rounds and confusing them is what broke an earlier
+version of the result below (`FINDINGS_P2_WITNESS.md`).
+
+**Behavioural identity is not accuracy.** On instances whose weighted depth is within its
+budget `k`, truncated Bellman-Ford returns answers identical to real Bellman-Ford on *every*
+instance — by construction, so no accuracy metric can separate them even in principle — and
+the fingerprint separates them anyway. Past `k` that same truncated algorithm is correct on
+none of them. Fingerprints also recover the trained algorithm from real
 networks: six MPNNs differing only by seed all identify as Bellman-Ford, and the *worst*
 model of the six identifies with the largest margin.
 

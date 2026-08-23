@@ -24,11 +24,12 @@ distribution `D`**: two executors are `≡_{I,D}`-equivalent when no stable pred
 the natural object of study not a similarity score but the **minimal separating set** — the
 smallest set of interventions under which a family of algorithms ceases to be equivalent. On
 five classical shortest-path algorithms we show this set has size two on graphs of propagation
-depth ≥ 7, size three at depth 5, and **does not exist** below depth ≈ 4, so identity is
+depth ≥ 9, size three at depth 6, and **does not exist** below depth ≈ 5, so identity is
 distribution-relative as well as intervention-relative. We give a case where behaviour and
-accuracy provably come apart: a truncated Bellman-Ford that returns answers identical to full
-Bellman-Ford on 11 of 12 shallow instances, is separated by intervention response anyway, and
-is correct on 0 of 12 once the distribution deepens. Applying the same instrument to trained
+accuracy provably come apart: a Bellman-Ford truncated at `k` rounds is output-identical to
+full Bellman-Ford on *every* instance of propagation depth at most `k` — by construction, not
+approximately — is separated from it by intervention response anyway, and is correct on none
+of the instances past that bound. Applying the same instrument to trained
 message-passing networks yields a **negative result we characterise precisely**: the networks
 are further from every reference algorithm than the references are from each other, and are not
 separable from one another either.
@@ -43,12 +44,13 @@ Suppose two systems produce identical outputs on every instance you can test. Ar
 the same algorithm?
 
 For most purposes the question sounds idle — until the distribution shifts. Consider
-Bellman-Ford, and a truncated variant that stops relaxing after `k = 3` rounds. On graphs of
-propagation depth 2, these two return **identical answers on 11 of 12 instances**. No accuracy
-metric, no validation loss, no output-space probe separates them, because in output space they
-are the same function on that distribution. Deepen the distribution slightly and the truncated
-variant is correct on **0 of 12**. The difference was always there; output agreement simply
-could not see it.
+Bellman-Ford, and a truncated variant that stops relaxing after `k` rounds. On any instance
+whose propagation depth is at most `k`, these two return **identical answers — on every such
+instance, by construction**, since the truncation discards only rounds in which nothing would
+have changed. Restricted to that subpopulation they are literally the same function, so no
+accuracy metric, no validation loss, and no output-space probe can separate them. Deepen the
+distribution past `k` and the truncated variant is correct on **none** of the instances that
+cross the bound. The difference was always there; output agreement could not see it.
 
 This is not a contrived example. It is the structure of a real and reproducible problem in
 neural algorithmic reasoning `[CITE: CLRS benchmark; NAR position papers]`: models reach
@@ -81,8 +83,8 @@ given family stops collapsing.
    nearest-reference label carries no information — a diagnostic we then apply to our own
    results.
 2. **The identifiability boundary, measured.** Two interventions separate five classical
-   algorithms at depth ≥ 7, three at depth 5, and **no subset of the suite suffices below depth
-   ≈ 4** (§5). Equivalence coarsens as instances get shallower.
+   algorithms at depth ≥ 9, three at depth 6, and **no subset of the suite suffices below depth
+   ≈ 5** (§5). Equivalence coarsens as instances get shallower.
 3. **A case where behaviour and accuracy provably diverge**, with the mechanism (§5.2): the
    truncation result above, plus the finding that limited *runtime* is detectable at any depth
    even when limited *propagation depth* is not.
@@ -210,7 +212,7 @@ Stated informally here; `THEORY.md` carries the formal versions and explicit wit
 - **P2 (behaviour ⊀ accuracy).** There exist `A, B` and `D` with identical output on
   `D`-almost-every instance that are separated by `≡_{I,D}`. Witness: §5.2.
 - **P3 (distribution-relativity).** `≡_{I,D}` depends on `D` with `I` fixed. Witness:
-  Dijkstra and SPFA separate at depth ≥ 5 and merge at diameter 2.
+  Dijkstra and SPFA separate at `depth_w ≥ 6` and merge below it.
 - **P4 (runtime vs depth).** Limited runtime and limited propagation depth are distinct
   observables; the former is detectable at any instance depth, the latter only on instances
   deeper than the truncation bound.
@@ -278,27 +280,55 @@ such (§7.2).
 
 ### 5.2 Behaviour and accuracy come apart — the central positive result
 
-At density 0.8 (propagation depth 2.0), truncated Bellman-Ford with `k = 3` returns output
-**identical to full Bellman-Ford on 11 of 12 graphs**, and is itself correct on 11 of 12. In
-output space, on this distribution, the two are the same function; no accuracy metric can
-separate them.
+**The right notion of depth.** Truncation cuts *rounds of relaxation*, so the depth that
+governs it is the number of edges on a shortest-**weight** path — equivalently, the round at
+which synchronous Bellman-Ford settles. This is not the graph's hop eccentricity: relaxation
+follows minimum-weight paths, which may use strictly more edges than minimum-hop ones, and on
+our generators the two measures differ by one to two rounds. We write `depth_w(G,s)` for the
+weighted quantity and use it throughout. (Getting this wrong is not a technicality; §7.3
+records the measurement error it caused in an earlier version of this result.)
 
-The fingerprint separates them anyway, via `insert_shortcut_from_source`:
+**The witness is exact, not empirical.** When `depth_w ≤ k`, the rounds `bf_truncated_k`
+discards are exactly those in which no estimate would have changed, so it is output-identical
+to full Bellman-Ford on *every* such instance and both are exactly correct. When `depth_w > k`
+it halts strictly before reaching the fixed point, so it is *never* identical and never
+correct. The population therefore splits deterministically at `k` in both directions, with no
+instance able to land in between. Over 600 instances spanning five densities and two seeds:
 
-| predicate | `bellman_ford` | `bf_truncated_k3` |
-|---|---|---|
-| recovery | exact | partial |
-| latency | 2 | never |
-| term_delta | + | 0 |
+| `depth_w` | n | BF ≡ truncated | truncated correct |
+|---|---|---|---|
+| ≤ k | 137 | **137 / 137** | **137 / 137** |
+| > k | 463 | **0 / 463** | **0 / 463** |
 
-And the difference is exactly the one that matters under shift: at density 0.2 the same
-truncated algorithm is correct on **0 of 12** graphs. The intervention response detected, on
-the shallow distribution, a defect that output accuracy could only reveal after the shift.
+No intermediate cases occur. Restricted to `depth_w ≤ k` the two executors are the same
+function, so no output-space test — accuracy, loss, or any probe of the returned answer —
+can distinguish them even in principle.
+
+**The fingerprint separates them anyway.** Aggregating over 120 instances drawn *only* from
+the `depth_w ≤ k` bucket, where output agreement is total, `insert_shortcut_from_source`
+separates them on two stable predicates:
+
+| predicate | `bellman_ford` | `bf_truncated_k3` | stability |
+|---|---|---|---|
+| recovery | exact | partial | 1.00 / 0.85 |
+| term_delta | + | 0 | 0.85 / 0.99 |
+
+Because every instance in this sample has identical output, the separation cannot be an
+accuracy difference in disguise. Two further predicates (`latency`, `depth`) show the
+expected direction but fail the pairwise stability gate and are excluded — a case of the
+rule in §4 doing its job.
+
+And the difference is exactly the one that matters under shift: truncated-BF's accuracy is
+precisely the probability mass the truncation budget covers, `P(depth_w ≤ k)`, which falls
+from ~73% at density 0.8 to 0% at density 0.05. The two quantities agree instance for
+instance at every density we measured. So the intervention response detected, on a
+subpopulation where accuracy was *exactly* perfect and *exactly* uninformative, the defect
+that accuracy could only reveal after the shift.
 
 **A prediction we made and falsified, which improved the result.** We pre-registered the
 expectation that BF and truncated-BF would be *inseparable* below depth 3, on the reasoning that
 an early-halting algorithm is only detectably early on instances deep enough to halt within.
-They were separable at **every** depth tested, including 2.0. The error was conflating two
+They were separable at **every** depth tested, down to `depth_w` 3.2. The error was conflating two
 consequences of truncation: limited *propagation depth*, which is indeed invisible on graphs
 shallower than `k`, and limited *total runtime*, which is visible at any depth because a probe
 fired mid-run gets no response from an executor that has already stopped. This is P4, and it is
@@ -307,19 +337,19 @@ it was trained on**, without constructing deep test instances.
 
 ### 5.3 Identifiability degrades with instance depth
 
-Sweeping density with `n` fixed:
+Sweeping density with `n` fixed, on the weighted depth of §5.2:
 
-| propagation depth | `|S_min|` |
+| `depth_w` | `|S_min|` |
 |---|---|
-| 17.2, 7.6 | **2** |
-| 5.1 | **3** |
-| ≤ 3.7 | **none exists** |
+| 17.1, 8.9 | **2** |
+| 6.0 | **3** |
+| ≤ 4.7 | **none exists** |
 
-Below depth ≈ 4 no subset of the nine-probe suite separates all pairs: Dijkstra and SPFA
-collapse, as do Dijkstra and Prim. This is P3 with a measured boundary, and it has a practical
-consequence — a protocol run on a dense, shallow default graph distribution lands where the
-method provably cannot work and returns a null about nothing. `[FIG 1: |S_min| vs depth, with
-the pairs that merge annotated.]`
+Below `depth_w ≈ 5` no subset of the nine-probe suite separates all pairs: Dijkstra and SPFA
+collapse first, below 6.0, and Dijkstra and Prim follow below 4.4. This is P3 with a measured
+boundary, and it has a practical consequence — a protocol run on a dense, shallow default
+graph distribution lands where the method provably cannot work and returns a null about
+nothing. `[FIG 1: |S_min| vs depth_w, with the pairs that merge annotated.]`
 
 ### 5.4 A limitation of the intervention class, not a gap in the results
 
@@ -463,6 +493,18 @@ written up as a null about fingerprints; a cross-fit trajectory check showed the
 difference had barely been installed, making it a null about model capacity instead — opposite
 next steps.
 
+**Bucket on the axis the mechanism acts on, not the one that is easy to compute.** Our
+strongest positive result was, for a time, wrong for this reason. Truncation cuts rounds of
+relaxation, but we bucketed instances by hop eccentricity, which is cheap and intuitive and
+*not* the same quantity: relaxation follows minimum-weight paths, so a graph whose every node
+is two hops away can still need five rounds. The dense bucket looked homogeneous and was a
+mixture of two deterministic regimes, and the headline agreement rate was a draw from that
+mixture that did not survive a tenfold increase in sample size. Re-bucketing on the correct
+axis turned an empirical rate into an exact claim. The general form: when a claim is
+conditioned on a covariate, check that the covariate is the one the mechanism is a function
+of — a monotone proxy is not enough, because it makes homogeneous-looking buckets that are
+not.
+
 **Leave no intermediate rung in the outcome ladder.** *Direction replicating while resolution
 does not* is the characteristic signature of a dead lead: it is what two of our retracted
 results looked like at the moment they seemed most promising, one of them with a sound
@@ -492,9 +534,9 @@ Every quantitative claim maps to a findings document and its reproducing command
 | § | Claim | Source |
 |---|---|---|
 | 5.1 | `|S_min| = 2`; the two probes; seed stability | `FINDINGS_PHASE_A.md` |
-| 5.2 | 11/12 identical; 0/12 correct; predicate table | `FINDINGS_IDENTIFIABILITY.md` |
+| 5.2 | `depth_w` definition; 137/137 vs 0/463 step; predicate table; accuracy = `P(depth_w ≤ k)` | `FINDINGS_P2_WITNESS.md` |
 | 5.2 | falsified depth-3 prediction; runtime vs depth | `FINDINGS_IDENTIFIABILITY.md` §2 |
-| 5.3 | `|S_min|` vs depth; impossibility below ≈ 4 | `FINDINGS_IDENTIFIABILITY.md` §3 |
+| 5.3 | `|S_min|` vs `depth_w`; impossibility below ≈ 5 | `FINDINGS_IDENTIFIABILITY.md` §3 |
 | 5.4 | key-dissociation probe; manipulation failure | `FINDINGS_E6.md` |
 | 5.5 | σ = 2; margin 0.146 → 0.077 | `FINDINGS_NOISE.md` |
 | 6.1 | 17/17; `p = 1.000`; mechanism check | `FINDINGS_E3.md` |
@@ -503,6 +545,15 @@ Every quantitative claim maps to a findings document and its reproducing command
 | 6.3 | bit-identical embedding; `χ² ~ 10⁴`; controls | `FINDINGS_FAMILY.md` |
 | 6.4 | normalisation; firing repair; 1.35 → 1.34 | `FINDINGS_E5.md`, `FINDINGS_H.md` |
 | 7.2 | `r = −0.233` retraction; `p = 0.5445` | `FINDINGS_H.md` (H1) |
+
+**Withdrawn numbers.** An earlier version of §5.2 reported that truncated-BF is
+output-identical to Bellman-Ford on **11 of 12** graphs at density 0.8 and correct on **0 of
+12** at density 0.2. Both are withdrawn. They were measured on hop eccentricity, where
+density 0.8 looks like a homogeneous depth-2 population but is in fact a mixture of instances
+needing three to five rounds; at `n = 200` the agreement rate is 70–76%, where truncated-BF is
+also ~30 points less accurate and the "no accuracy metric separates them" claim fails. The
+`0 of 12` does not reproduce at all (3/12 on the same draw, ~12% at `n = 200`). Keyed on
+`depth_w` the claim becomes exact and is reported that way in §5.2.
 
 **Numbers deliberately not used.** §6.1 quotes the H2-repaired distances (0.290 / 0.216) rather
 than the originals (0.409 / 0.303); the ratio is 1.34 either way, and the repaired measurement
